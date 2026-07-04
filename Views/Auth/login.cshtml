@@ -1,0 +1,38 @@
+@using App.Controllers;
+@{
+    const string action = "/auth/login";
+    const string register = "/auth/register";
+}
+
+<form id="login-form" class="form form-boxed shadow" method="post" action="@action"
+    hx-post="@action"
+    hx-target="#error"
+>
+    <label for="login_or_email">Логин:</label>
+    <div class="form-field">
+        <input id="login_or_email" name="login_or_email" type="text" placeholder="aboba69" required
+            hx-post="/auth/login/user_exists"
+            hx-trigger="input changed delay:200ms"
+            hx-target="#error"
+        />
+    </div>
+
+    <label for="password">Пароль:</label>
+    <div class="form-field">
+        <input id="password" name="password" type="password" placeholder="123" required />
+    </div>
+
+    <div id="error">
+        @await Html.PartialAsync("errors")
+    </div>
+
+    <button class="form-submit" type="submit">Войти</button>
+    <button class="form-reset" type="reset">Сбросить</button>
+
+    <p class="text-center"><a class="link-decor" href="@register"
+        hx-get="@register"
+        hx-target="#login-form"
+        hx-swap="outerHTML"
+        hx-push-url="true"
+    >Регистрация</a></p>
+</form>

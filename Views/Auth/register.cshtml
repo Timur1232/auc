@@ -1,0 +1,53 @@
+@using App.Controllers;
+@{
+    const string action = "/auth/register";
+    const string login = "/auth/login";
+}
+
+<form id="register-form" class="form form-boxed shadow" method="post" action="@action"
+    hx-post="@action"
+    hx-target="#error"
+>
+
+    <label for="login">Логин:</label>
+    <div class="form-field">
+        <input id="login" name="login" type="text" placeholder="aboba69" required
+            hx-post="/auth/register/user_exists"
+            hx-trigger="input changed delay:200ms"
+            hx-target="#error"
+        />
+    </div>
+
+    <label for="email">Почта:</label>
+    <div class="form-field">
+        <input id="email" name="email" type="email" placeholder="urmom@my.bed"
+            hx-post="/auth/register/user_exists"
+            hx-trigger="input changed delay:200ms"
+            hx-target="#error"
+        />
+    </div>
+
+    <label for="password">Пароль:</label>
+    <div class="form-field">
+        <input id="password" name="password" type="password" placeholder="123" required />
+    </div>
+
+    <label for="password_confirm">Подтвердите пароль:</label>
+    <div class="form-field">
+        <input id="password_confirm" name="password_confirm" type="password" placeholder="123" required />
+    </div>
+
+    <div id="error">
+        @await Html.PartialAsync("errors")
+    </div>
+
+    <button class="form-submit" type="submit">Регистрация</button>
+    <button class="form-reset" type="reset">Сбросить</button>
+
+    <p class="text-center"><a class="link-decor" href="@login"
+        hx-get="@login"
+        hx-target="#register-form"
+        hx-swap="outerHTML"
+        hx-push-url="true"
+    >Вход</a></p>
+</form>
