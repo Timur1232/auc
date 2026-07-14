@@ -4,6 +4,7 @@ public class HomePageModel
 {
     public struct LotCard
     {
+        public uint id;
         public string? image_path;
         public string title;
         public decimal price;

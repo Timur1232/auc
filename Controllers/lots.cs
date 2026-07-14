@@ -7,20 +7,19 @@ namespace App.Controllers;
 
 [ApiController]
 [Route("lots")]
-[Authorize]
-[GetUserStrict, AddViewData, HtmxServe]
+[AddViewData, HtmxServe]
 public class LotsController(AuctionDbContext db) : Controller
 {
     public LotsModel model = new(db);
 
-    [HttpGet]
-    public async Task<IActionResult> GetLots([FromQuery] int? page, [FromQuery] int? page_size, [FromQuery] uint? tag_id)
+    [Authorize, HttpGet("my"), GetUserStrict]
+    public async Task<IActionResult> GetUserLots([FromQuery] int? page, [FromQuery] int? page_size, [FromQuery] uint? tag_id)
     {
         var lots = model.GetPage(tag_id, page ?? 0, page_size ?? LotsModel.DEFAULT_PAGE_SIZE);
         return Ok(lots);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}"), GetUser]
     public async Task<IActionResult> GetLot(uint id)
     {
         var lot = await db.lots.FindAsync(id);
@@ -30,7 +29,7 @@ public class LotsController(AuctionDbContext db) : Controller
         return Ok(lot);
     }
 
-    [HttpPost]
+    [Authorize, HttpPost, GetUserStrict]
     public async Task<IActionResult> Create([FromForm] Lot.CreateRequest req)
     {
         var user = HttpContext.GetUser()!;
@@ -42,7 +41,7 @@ public class LotsController(AuctionDbContext db) : Controller
         return Ok(entry.Entity);
     }
 
-    [HttpDelete("{id}")]
+    [Authorize, HttpDelete("{id}"), GetUserStrict]
     public async Task<IActionResult> DeleteByid(uint id)
     {
         var (deleted_lot, err) = await model.DeleteById(id);
@@ -53,7 +52,7 @@ public class LotsController(AuctionDbContext db) : Controller
         return Ok(deleted_lot);
     }
 
-    [HttpPatch("{id}")]
+    [Authorize, HttpPatch("{id}"), GetUserStrict]
     public async Task<IActionResult> UpdateById(uint id, [FromForm] Lot.CreateRequest req)
     {
         var (updated_lot, err) = await model.UpdateById(id, req);

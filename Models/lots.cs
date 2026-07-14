@@ -20,6 +20,7 @@ public class LotsModel(AuctionDbContext db)
         foreach (var lot in lots) {
             var image = await lot.GetImages(db).FirstOrDefaultAsync();
             lot_cards.Add(new HomePageModel.LotCard{
+                id = lot.id,
                 image_path = image?.image_path,
                 title = lot.title,
                 price = lot.current_price,
