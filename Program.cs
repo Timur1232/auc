@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using App;
 using App.Services;
 using App.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -18,27 +20,50 @@ builder.Services.AddDbContext<AuctionDbContext>(opt => {
     }
 });
 
-builder.Services.AddScoped<JwtTokenProvider>();
+builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<PasswordHasher>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.WithOrigins("http://localhost:8080")
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+builder.Services.AddAuthorizationBuilder()
+    .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build());
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o => {
+        o.RequireHttpsMetadata = false;
+        o.TokenValidationParameters = JwtTokenService.MakeTokenValidationParameters(config);
+        o.Events = new JwtBearerEvents {
+            OnMessageReceived = c => {
+                var token_header = c.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                if (string.IsNullOrEmpty(token_header)) {
+                    c.Token = c.Request.Cookies["jwt_token"];
+                } else {
+                    c.Token = token_header;
+                }
+                return Task.CompletedTask;
+            },
+            OnChallenge = c => {
+                c.Response.Redirect("/auth/login");
+                c.HandleResponse();
+                return Task.CompletedTask;
+            }
+        };
     });
-});
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapControllers();
+
+if (builder.Environment.IsDevelopment()) {
+    using (var scope = app.Services.CreateScope()) {
+        var db = scope.ServiceProvider.GetRequiredService<AuctionDbContext>();
+        await db.Database.MigrateAsync();
+    }
+}
 
 app.Run();

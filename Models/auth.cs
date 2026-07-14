@@ -85,10 +85,7 @@ public class AuthModel(AuctionDbContext db, PasswordHasher password_hasher)
         };
         db.users.Add(new_user);
 
-        try {
-            await db.SaveChangesAsync();
-        } catch (Exception e) {
-            Console.Error.WriteLine(e.ToString());
+        if (!await db.TrySaveChangesAsync()) {
             errors.Add(Error.DbError);
             return (null, errors);
         }

@@ -3,6 +3,7 @@ using System;
 using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    partial class Db_ContextModelSnapshot : ModelSnapshot
+    [Migration("20260707105143_entity_framework_is_fr_hot_pile_of_garbage")]
+    partial class entity_framework_is_fr_hot_pile_of_garbage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
@@ -42,10 +45,6 @@ namespace App.Migrations
                     b.Property<uint>("tag_id")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("user_login")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -53,24 +52,6 @@ namespace App.Migrations
                     b.HasKey("id");
 
                     b.ToTable("lots");
-                });
-
-            modelBuilder.Entity("App.Models.LotImage", b =>
-                {
-                    b.Property<uint>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("image_path")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<uint>("lot_id")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("id");
-
-                    b.ToTable("lot_images");
                 });
 
             modelBuilder.Entity("App.Models.Tag", b =>

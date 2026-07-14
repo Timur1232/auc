@@ -1,0 +1,23 @@
+@model App.Models.HomePageModel
+@using App.Models;
+@{
+    var user = ViewData["user"] as User;
+}
+
+<aside class="lot-filters">
+    <div class="lot-tags">
+        @foreach (var tag in @Model.tags) {
+            <a href="/?tag_id=@(tag.id)"
+                hx-get="/?tag_id=@(tag.id)"
+                hx-target="main"
+                hx-push-url="true"
+            >@tag.name</a>
+        }
+    </div>
+</aside>
+
+<div class="lot-cards-grid">
+    @foreach (var card in @Model.cards) {
+        @await Html.PartialAsync("lot_card", card);
+    }
+</div>

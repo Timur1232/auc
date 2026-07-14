@@ -3,6 +3,7 @@ using System;
 using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    partial class Db_ContextModelSnapshot : ModelSnapshot
+    [Migration("20260707104438_entity_framework_is_piece_of_shit")]
+    partial class entity_framework_is_piece_of_shit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
@@ -39,38 +42,20 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<uint>("tag_id")
+                    b.Property<uint>("tagid")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("user_login")
+                    b.Property<string>("userlogin")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("id");
+
+                    b.HasIndex("tagid");
+
+                    b.HasIndex("userlogin");
 
                     b.ToTable("lots");
-                });
-
-            modelBuilder.Entity("App.Models.LotImage", b =>
-                {
-                    b.Property<uint>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("image_path")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<uint>("lot_id")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("id");
-
-                    b.ToTable("lot_images");
                 });
 
             modelBuilder.Entity("App.Models.Tag", b =>
@@ -109,6 +94,35 @@ namespace App.Migrations
                         .IsUnique();
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("App.Models.Lot", b =>
+                {
+                    b.HasOne("App.Models.Tag", "tag")
+                        .WithMany("lots")
+                        .HasForeignKey("tagid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Models.User", "user")
+                        .WithMany("lots")
+                        .HasForeignKey("userlogin")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("tag");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("App.Models.Tag", b =>
+                {
+                    b.Navigation("lots");
+                });
+
+            modelBuilder.Entity("App.Models.User", b =>
+                {
+                    b.Navigation("lots");
                 });
 #pragma warning restore 612, 618
         }

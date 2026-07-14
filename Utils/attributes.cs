@@ -3,7 +3,42 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 
+using App.Models;
+using App.Extentions;
+
 namespace App.Attributes;
+
+public class GetUserOpt(bool strict) : ActionFilterAttribute
+{
+    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        var db = context.HttpContext.RequestServices.GetRequiredService<AuctionDbContext>();
+        var user = await db.GetUserByClaims(context.HttpContext.User);
+
+        if (strict && user == null) {
+            context.Result = new UnauthorizedResult();
+            return;
+        }
+
+        context.HttpContext.Items["user"] = user;
+        context.ActionArguments["user"] = user;
+        if (context.Controller is Controller c) {
+            c.ViewData["user"] = user;
+        }
+
+        await next();
+    }
+}
+
+public class GetUser : GetUserOpt
+{
+    public GetUser() : base(false) {}
+}
+
+public class GetUserStrict : GetUserOpt
+{
+    public GetUserStrict() : base(true) {}
+}
 
 // Supporting only russian for now
 public enum Language {
@@ -26,49 +61,54 @@ public class Htmx(bool requred = true) : ActionMethodSelectorAttribute
 {
     public override bool IsValidForRequest(RouteContext route_context, ActionDescriptor action)
     {
-        return requred == G.IsHtmx(route_context.HttpContext.Request);
+        return requred == route_context.HttpContext.Request.IsHtmx();
     }
 }
 
-public class HtmxRedirect : ActionFilterAttribute
+public class HtmxServe : ActionFilterAttribute
 {
+    public const string HX_REDIRECT_HEADER = "HX-Redirect";
+
     public override void OnActionExecuted(ActionExecutedContext context)
     {
         if (context.Controller is Controller c) {
-            if (G.IsHtmx(c.Request)) {
+            if (c.Request.IsHtmx()) {
                 if (context.Result is RedirectResult r) {
-                    c.Response.Headers.Append(G.HX_REDIRECT_HEADER, r.Url);
+                    c.Response.Headers.Append(HX_REDIRECT_HEADER, r.Url);
                     context.Result = new OkResult();
                 }
             }
         }
     }
-}
 
-public class HtmxLayout : ActionFilterAttribute
-{
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         if (context.Controller is Controller c) {
-            if (!G.IsHtmx(c.Request)) G.SetLayout(c.ViewData);
+            if (!c.Request.IsHtmx()) c.ViewData.SetLayout();
+            c.ViewBag.htmx = c.Request.IsHtmx();
         }
     }
 }
 
-public class HtmxViewData : ActionFilterAttribute
+public class SaveLocation : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         if (context.Controller is Controller c) {
-            c.ViewBag.htmx = G.IsHtmx(c.Request);
+            var query_loc = c.Request.Query["saved_location"].FirstOrDefault();
+            if (query_loc != null) {
+                c.ViewData.SaveLocation(query_loc);
+            }
         }
     }
 }
 
-public class Json(bool requerd = true) : ActionMethodSelectorAttribute
+public class AddViewData : ActionFilterAttribute
 {
-    public override bool IsValidForRequest(RouteContext route_context, ActionDescriptor action)
+    public override void OnActionExecuting(ActionExecutingContext context)
     {
-        return requerd == (route_context.HttpContext.Request.Query["json"] == "true");
+        if (context.Controller is Controller c) {
+            c.ViewData.SetCurrentPath(c.Request.Path.ToString());
+        }
     }
 }

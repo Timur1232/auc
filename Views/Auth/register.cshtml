@@ -1,13 +1,16 @@
 @using App.Controllers;
+@using App.Extentions;
 @{
     const string action = "/auth/register";
     const string login = "/auth/login";
+    var last_saved_location = ViewData.GetSavedLocation();
 }
 
 <form id="register-form" class="form form-boxed shadow" method="post" action="@action"
     hx-post="@action"
     hx-target="#error"
 >
+    <input name="last_saved_location" type="hidden" value="@last_saved_location">
 
     <label for="login">Логин:</label>
     <div class="form-field">
@@ -44,8 +47,8 @@
     <button class="form-submit" type="submit">Регистрация</button>
     <button class="form-reset" type="reset">Сбросить</button>
 
-    <p class="text-center"><a class="link-decor" href="@login"
-        hx-get="@login"
+    <p class="text-center"><a class="link-decor" href="@(login)?saved_location=@(last_saved_location)"
+        hx-get="@(login)?saved_location=@(last_saved_location)"
         hx-target="#register-form"
         hx-swap="outerHTML"
         hx-push-url="true"

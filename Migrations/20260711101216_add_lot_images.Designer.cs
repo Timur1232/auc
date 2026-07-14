@@ -3,6 +3,7 @@ using System;
 using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AuctionDbContext))]
-    partial class Db_ContextModelSnapshot : ModelSnapshot
+    [Migration("20260711101216_add_lot_images")]
+    partial class add_lot_images
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
@@ -41,10 +44,6 @@ namespace App.Migrations
 
                     b.Property<uint>("tag_id")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("user_login")
                         .IsRequired()

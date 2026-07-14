@@ -1,0 +1,39 @@
+@using App.Models;
+@using App.Extentions;
+@{
+    var current_path = ViewData.GetCurrentPath();
+    var user = ViewData["user"] as User;
+}
+
+<nav class="header-nav">
+    <div id="logo">
+        <a href="/">АУК</a>
+    </div>
+    <ul class="header-nav-pages">
+        <li class="header-link hover-shadow">
+            <a href="/" class="@(current_path == "/" ? "link-decor" : null)">
+                Главная
+            </a>
+        </li>
+        @if (user != null) {
+            <li class="header-link hover-shadow">
+                <a href="/user" class="@(current_path == "/user" ? "link-decor" : null)">
+                    Аккаунт
+                </a>
+            </li>
+            <li class="header-link hover-shadow">
+                <a href="/auth/logout?saved_location=@(current_path)"
+                    hx-post="/auth/logout?saved_location=@(current_path)"
+                >
+                    Выход
+                </a>
+            </li>
+        } else {
+            <li class="header-link hover-shadow">
+                <a href="/auth/login" class="@(current_path == "/auth/login" ? "link-decor" : null)">
+                    Вход
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
