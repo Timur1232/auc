@@ -6,6 +6,7 @@ const ultra = (function() {
         from_dom: null,
         by_id: null,
         by_selector: null,
+        by_selector_all: null,
         State: null,
         get_dom_element: null,
     };
@@ -15,6 +16,7 @@ const ultra = (function() {
     ultra.dump_tags_to_window = dump_tags_to_window;
     ultra.by_id = by_id;
     ultra.by_selector = by_selector;
+    ultra.by_selector_all = by_selector_all;
     ultra.get_dom_element = get_dom_element;
 
     function tag(name, ...children) {
@@ -189,6 +191,11 @@ const ultra = (function() {
     function by_selector(selector, root = document) {
         const element = root.querySelector(selector);
         return from_dom(element);
+    }
+
+    function by_selector_all(selector, root = document) {
+        const elements = root.querySelectorAll(selector);
+        return Array.from(elements).map(from_dom);
     }
 
     function img(src, alt) {

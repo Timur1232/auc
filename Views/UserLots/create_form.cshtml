@@ -21,7 +21,7 @@
 
     <label for="tag">Категория</label>
     <div class="form-field">
-        <select name="tag" id="tag">
+        <select name="tag_id" id="tag">
             <option value="" selected>Выберите</option>
             @foreach(var tag in @Model.tags) {
                 <option value="@tag.id">@tag.name</option>
@@ -47,8 +47,6 @@
         <button type="button" class="form-reset" id="clear-files">Очистить файлы</button>
         <div class="form-field file-loader">
             <input id="files-input" name="images" type="file" multiple accept="image/*" hidden />
-
-
             <div id="file-container" data-state="files" class="image-cards-container"></div>
             <script src="/js/files_load_toolbar.js"></script>
         </div>

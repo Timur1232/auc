@@ -7,9 +7,9 @@ namespace App.Controllers;
 [Route("/")]
 [GetUser, HtmxServe, AddViewData]
 [Title("Главная страница")]
-public class HomePageController(AuctionDbContext db) : Controller
+public class HomePageController(AuctionDbContext db, IWebHostEnvironment env) : Controller
 {
-    public LotsModel lots_model = new(db);
+    public LotsModel lots_model = new(db, env);
 
     [HttpGet]
     public async Task<IActionResult> MainPage([FromQuery] int? page, [FromQuery] int? page_size, [FromQuery] uint? tag_id)

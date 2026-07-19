@@ -12,14 +12,22 @@ namespace App.Controllers;
 [GetUserStrict, AddViewData, HtmxServe]
 public class UserController(
         AuctionDbContext db,
-        PasswordHasher ph
+        PasswordHasher ph,
+        IWebHostEnvironment env
         ) : Controller
 {
+    private LotsModel lots_model = new(db, env);
+
     [HttpGet]
     public async Task<IActionResult> UserInfo()
     {
         var user = HttpContext.GetUser()!;
-        return View("user_info", user.ToDto());
+        var lots = await lots_model.GetUserLots(user.login);
+        var vm = new UserLotsViewModel {
+            user = user.ToDto(),
+            lots = lots
+        };
+        return View("user_info", vm);
     }
 
     [HttpGet("lots")]

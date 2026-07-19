@@ -11,18 +11,28 @@ namespace App.Controllers;
 [Route("lots")]
 [AddViewData, HtmxServe]
 [GetUser]
-public class PublicLotsController(AuctionDbContext db) : Controller
+public class PublicLotsController(AuctionDbContext db, IWebHostEnvironment env) : Controller
 {
-    public LotsModel model = new(db);
+    public LotsModel model = new(db, env);
 
     [HttpGet("{id}")]
     public async Task<IActionResult> LotDetails([FromRoute] uint id)
     {
         var lot = await model.GetById(id);
-        if (lot == null) {
-            return NotFound();
-        }
-        return View("lot_details", lot);
+        if (lot == null) return NotFound();
+
+        var images = await lot.GetImages(db).ToListAsync();
+        var seller = await db.GetUserByLogin(lot.user_login);
+        var current_user = HttpContext.GetUser();
+        var is_owner = current_user?.login == lot.user_login;
+
+        var vm = new LotDetailsViewModel {
+            lot = lot,
+            images = images,
+            seller = seller,
+            is_owner = is_owner
+        };
+        return View("lot_details", vm);
     }
 }
 
@@ -30,9 +40,9 @@ public class PublicLotsController(AuctionDbContext db) : Controller
 [Route("lots/my")]
 [AddViewData, HtmxServe]
 [Authorize, GetUserStrict]
-public class UserLotsController(AuctionDbContext db) : Controller
+public class UserLotsController(AuctionDbContext db, IWebHostEnvironment env) : Controller
 {
-    public LotsModel model = new(db);
+    public LotsModel model = new(db, env);
 
     [HttpGet]
     public async Task<IActionResult> GetUserLots([FromQuery] int? page, [FromQuery] int? page_size, [FromQuery] uint? tag_id)
@@ -58,26 +68,20 @@ public class UserLotsController(AuctionDbContext db) : Controller
         return View("create_form", new CreateFormData{ tags = tags });
     }
 
-    [HttpPost("create-test")]
-    public async Task<IActionResult> CreateTest([FromForm] IFormFileCollection images)
-    {
-        var sb = new System.Text.StringBuilder();
-        foreach (var image in images) {
-            sb.Append($"<p>{image.FileName}</p>");
-        }
-        return Content($"<p>Count: {images.Count()}</p>{sb.ToString()}", "text/html");
-    }
-
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromForm] Lot.CreateRequest req)
     {
         var user = HttpContext.GetUser()!;
-        var entry = db.lots.Add(Lot.From(req, user.login));
-        if (!await db.TrySaveChangesAsync()) {
-            Response.StatusCode = 400;
-            return Content("Unable to create lot");
+        var (lot, errors) = await model.CreateLot(req, user.login);
+
+        if (errors.Count > 0) {
+            var tags = await db.tags.ToListAsync();
+            var form_data = new CreateFormData { tags = tags };
+            ViewData["errors"] = errors;
+            return View("create_form", form_data);
         }
-        return Ok(entry.Entity);
+
+        return Redirect("/user");
     }
 
     [HttpDelete("{id}")]
@@ -88,7 +92,7 @@ public class UserLotsController(AuctionDbContext db) : Controller
             Response.StatusCode = 400;
             return Content(err.GetMessage());
         }
-        return Ok(deleted_lot);
+        return Ok();
     }
 
     [HttpPatch("{id}")]

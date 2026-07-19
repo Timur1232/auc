@@ -1,19 +1,94 @@
-@model App.Models.Lot
+@model App.Models.LotDetailsViewModel
 @{
     var saved_page = (string?)ViewData["page"] ?? "0";
+    var first_image = Model.images.FirstOrDefault();
 }
 
-<a href="/?page=@saved_page">Вернуться</a>
+<div class="content-container lot-detail">
+    <a href="/?page=@saved_page" class="back-link">← Вернуться</a>
 
-<h1>@Model.title</h1>
+    <div class="lot-detail-grid">
+        <div class="gallery">
+            <div class="main-image-container">
+                <img id="mainImage"
+                     src="@(first_image?.image_path ?? "/images/no-image.png")"
+                     alt="Главное изображение" />
+            </div>
+            <div class="thumbnails-container">
+                @if (Model.images.Count > 1) {
+                    foreach (var img in Model.images) {
+                        <div class="thumbnail-item @(img == first_image ? "active" : "")"
+                             data-image="@img.image_path">
+                            <img src="@img.image_path" alt="Миниатюра" />
+                        </div>
+                    }
+                }
+            </div>
+        </div>
 
-<p>
-    Текущая цена: <span class="lot-price">@Model.current_price</span>
-</p>
-<p>
-    Начальная цена: <span class="lot-price">@Model.initial_price</span>
-</p>
+        <div class="info">
+            <h1>@Model.lot.title</h1>
 
-<p>
-    Закрытие лота в: <span>@Model.end_time</span>
-</p>
+            <div class="lot-price-details">
+                <span class="lot-price-label">Текущая цена:</span>
+                <span class="lot-price">@Model.lot.current_price</span>
+            </div>
+
+            @if (!Model.is_owner) {
+                <form class="form bid-form" method="post" action="/lots/@Model.lot.id/bid">
+                    <div class="form-field">
+                        <input type="number" name="amount" placeholder="Ваша ставка" step="0.01" min="@(Model.lot.current_price + 0.01M)" required />
+                    </div>
+                    <button class="form-submit" type="submit">Сделать ставку</button>
+                </form>
+            } else {
+                <p class="owner-notice">Вы владелец этого лота</p>
+            }
+
+            <div class="lot-meta">
+                <p><span class="label">Дата закрытия:</span> <span class="value">@Model.lot.end_time.ToString("g")</span></p>
+                <p><span class="label">Начальная цена:</span> <span class="value">@Model.lot.initial_price</span></p>
+                <p><span class="label">Количество:</span> <span class="value">@Model.lot.count</span></p>
+            </div>
+
+            <div class="lot-description">
+                <h3>Описание</h3>
+                <p>Здесь будет описание лота (пока заглушка).</p>
+            </div>
+
+            <div class="lot-characteristics">
+                <h3>Характеристики</h3>
+                <p>Здесь будут характеристики (пока заглушка).</p>
+            </div>
+
+            <div class="seller-info">
+                <span class="label">Продавец:</span>
+                <a href="/user/@Model.seller?.login">@(Model.seller?.login ?? "Неизвестно")</a>
+            </div>
+
+            <div class="bid-history">
+                <h3>История ставок</h3>
+                <p>История ставок будет отображаться здесь.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function (){
+        const images = ultra.by_selector_all('.thumbnail-item');
+        for (const i of images) {
+            i.$on_click(fuwnction() {
+                const main_img = ultra.by_id('mainImage');
+                const src = this.dataset.image;
+                if (src) {
+                    main_img.src = src;
+                    for (const i of images) {
+                        i.$class_remove('active');
+                    }
+                    ultra.from_dom(this).$class('active');
+                }
+            });
+        }
+    })();
+</script>

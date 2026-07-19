@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 namespace App.Models;
 
@@ -20,9 +21,10 @@ public class Lot
 {
     [Key] public uint id {get; set;}
 
-    [Required]
+    [Required, ForeignKey(nameof(User))]
     public string user_login {get; set;} = null!;
 
+    [ForeignKey(nameof(Tag))]
     public uint tag_id {get; set;}
 
     [Required] public string title {get; set;} = null!;
@@ -31,14 +33,14 @@ public class Lot
                public decimal current_price {get; set;}
     [Required] public DateTimeOffset end_time {get; set;}
 
-
     public record CreateRequest(
         string title,
         int count,
         decimal price,
         DateTime end_time,
         uint tag_id,
-        IFormFileCollection images
+        IFormFile? thumbnail,
+        IFormFileCollection? images
     );
 
     public static Lot From(CreateRequest data, string user_login)
@@ -46,7 +48,7 @@ public class Lot
         var lot = new Lot {
             title = data.title,
             user_login = user_login,
-            // tag_id = data.tag_id,
+            tag_id = data.tag_id,
             count = data.count,
             initial_price = data.price,
             current_price = data.price,
@@ -62,7 +64,7 @@ public class Lot
 public class LotImage
 {
     [Key] public uint id {get; set;}
-    public uint lot_id {get; set;}
+    [ForeignKey(nameof(Lot))] public uint lot_id {get; set;}
     [Required] public string image_path {get; set;} = null!;
 }
 
