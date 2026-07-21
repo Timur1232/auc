@@ -3,7 +3,7 @@
     const t = ultra.tags;
     let img_url = null;
 
-    ultra.by_id('thumbnail-input').$on_change(function(){
+    ultra.by_id('thumbnail-input').$on_change(function() {
         if (img_url) {
             URL.revokeObjectURL(img_url);
             img_url = null;
@@ -47,7 +47,7 @@
 })();
 
 // Other
-(function () {
+(function() {
     const form = ultra.by_id('lot-create-form');
     const thumbnail_input = form.$find('#thumbnail-input');
     const files_input = form.$find('#files-input');
