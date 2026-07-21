@@ -1,5 +1,15 @@
 namespace App.Models;
 
+public record HomePageQuery(
+    int page = 0,
+    int page_size = LotsModel.DEFAULT_PAGE_SIZE,
+    uint? tag_id = null,
+    string? search = null,
+    string sort_by = "end_time",
+    string sort_dir = "asc",
+    bool show_closed = false
+);
+
 public class HomePageModel
 {
     public struct LotCard
@@ -12,8 +22,11 @@ public class HomePageModel
         public bool closed;
     }
 
-    public IEnumerable<LotCard> cards = null!;
+    public List<LotCard> cards = null!;
     public List<Tag> tags = null!;
+    public HomePageQuery query = null!;
+    public int total_count;
+    public int pages_count;
 }
 
 public class CreateFormData

@@ -111,6 +111,19 @@ public class Lot
         IFormFileCollection? images
     );
 
+    public record EditRequest(
+        string? title,
+        string? description,
+        string? city,
+        string? payment_method,
+        string? delivery_payment,
+        int? count,
+        DateTime? end_time,
+        uint? tag_id,
+        IFormFile? thumbnail,
+        IFormFileCollection? images
+    );
+
     public static Lot From(CreateRequest data, string user_login)
     {
         var lot = new Lot {
@@ -127,6 +140,18 @@ public class Lot
             delivery_payment = data.delivery_payment,
         };
         return lot;
+    }
+
+    public void Update(EditRequest data)
+    {
+        title = data.title!;
+        tag_id = (uint)data.tag_id!;
+        count = (int)data.count!;
+        end_time = (DateTimeOffset)data.end_time!;
+        description = data.description;
+        city = data.city;
+        payment_method = data.payment_method!;
+        delivery_payment = data.delivery_payment!;
     }
 
     public decimal RecalculatePrice()

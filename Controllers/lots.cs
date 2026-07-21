@@ -6,7 +6,6 @@ using App.Extentions;
 using App.Attributes;
 namespace App.Controllers;
 
-
 [ApiController]
 [Route("lots")]
 [AddViewData, HtmxServe]
@@ -106,10 +105,10 @@ public class UserLotsController(AuctionDbContext db, IWebHostEnvironment env) : 
         return Ok(lots);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetLot(uint id)
+    [HttpGet("{lot_id}")]
+    public async Task<IActionResult> GetLot(uint lot_id)
     {
-        var lot = await db.lots.FindAsync(id);
+        var lot = await db.lots.FindAsync(lot_id);
         if (lot == null) {
             return NotFound();
         }
@@ -139,15 +138,27 @@ public class UserLotsController(AuctionDbContext db, IWebHostEnvironment env) : 
         return Redirect("/user");
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteByid(uint id)
+    [HttpDelete("{lot_id}")]
+    public async Task<IActionResult> DeleteByid(uint lot_id)
     {
-        var (deleted_lot, err) = await model.DeleteById(id);
+        var (deleted_lot, err) = await model.DeleteById(lot_id);
         if (err != ModelError.None || deleted_lot == null) {
             Response.StatusCode = 400;
             return Content(err.GetMessage());
         }
         return Ok();
+    }
+
+    [HttpPatch("{lot_id}")]
+    public async Task<IActionResult> UpdateByid([FromRoute] uint lot_id, [FromForm] Lot.EditRequest req)
+    {
+        var (updated_lot, errors) = await model.UpdateById(lot_id, req);
+        if (errors.Count > 0 || updated_lot == null) {
+            ViewData["errors"] = errors;
+            return View("errors");
+        }
+        ViewData["result_messages"] = "Лот успешно обновлен!";
+        return View("good_results");
     }
 
     [HttpGet("{lot_id}/purchase")]
@@ -201,5 +212,22 @@ public class UserLotsController(AuctionDbContext db, IWebHostEnvironment env) : 
         }
 
         return Redirect("/user");
+    }
+
+    [HttpGet("{lot_id}/edit")]
+    public async Task<IActionResult> EditForm([FromRoute] uint lot_id)
+    {
+        var lot = await model.GetById(lot_id);
+        if (lot == null) {
+            return NotFound();
+        }
+        var tags = await db.tags.ToListAsync();
+
+        var data = new CreateFormData {
+            current_lot = lot,
+            tags = tags,
+        };
+
+        return View("edit_form", data);
     }
 }

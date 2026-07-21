@@ -1,0 +1,15 @@
+@model App.Models.HomePageModel;
+@{
+    var need_pagination = (bool?)ViewData["pagination"] ?? false;
+}
+
+<div class="lot-cards-grid">
+    @foreach (var card in Model.cards) {
+        @await Html.PartialAsync("lot_card", card)
+    }
+</div>
+@if (need_pagination) {
+    <div hx-swap-oob="true" id="pagination-links">
+        @await Html.PartialAsync("pagination_links", Model)
+    </div>
+}

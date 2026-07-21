@@ -185,6 +185,9 @@ hr {
     padding-bottom: 8px;
     font-weight: normal;
 }
+input.form-like,
+select.form-like,
+textarea.form-like,
 .form input,
 .form select,
 .form textarea {
@@ -197,10 +200,14 @@ hr {
     background: var(--color-secondary);
     color: var(--color-text);
 }
+textarea.form-like,
 .form textarea {
     resize: vertical;
     min-height: 80px;
 }
+input.form-like:focus,
+select.form-like:focus,
+textarea.form-like:focus,
 .form input:focus,
 .form select:focus,
 .form textarea:focus {
@@ -262,15 +269,22 @@ hr {
     background: var(--color-accent);
     color: var(--color-black);
 }
+.form-good,
 .form-error {
-    background-color: var(--color-error);
     display: block;
     padding: 8px;
     margin-top: 15px;
     font-size: 14px;
     border-style: dotted;
     border-width: 2px;
+}
+.form-error {
+    background-color: var(--color-error);
     border-color: var(--color-accent2);
+}
+.form-good {
+    background-color: var(--color-good);
+    border-color: var(--color-accent-good);
 }
 
 .hidden {
@@ -364,83 +378,6 @@ header {
     justify-items: center;
     align-items: center;
     margin-left: 25px;
-}
-
-/* ===============================[Cards]============================= */
-
-.lot-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-
-    gap: 10px;
-    padding: 30px 40px;
-}
-.lot-card {
-    --hover-shadow-offset-top: 0.5em;
-    --hover-shadow-offset-left: 0.4em;
-    --line-clamp: 2;
-
-    display: flex;
-    flex-direction: column;
-    align-content: space-around;
-    flex-grow: 1;
-    flex-basis: 250px;
-
-    padding: 15px;
-
-    height: 375px;
-
-    border-width: 1px;
-    border-style: dashed;
-    border-color: var(--color-secondary);
-
-    transition: 200ms;
-}
-.lot-card:hover {
-    border-style: solid;
-    cursor: pointer;
-}
-.lot-card img {
-    object-fit:contain;
-    flex-grow: 1;
-    aspect-ratio: 1/1;
-}
-.lot-price {
-    color: var(--color-accent);
-    text-align: right;
-    font-size: 1.4em;
-    font-weight: bold;
-}
-.lot-card .lot-price {
-    align-self: flex-end;
-}
-.lot-price::after {
-    content: " ₽";
-    color: inherit;
-    font-size: inherit;
-}
-.lot-card-end-time {
-    align-self: flex-end;
-    margin: 10px 0;
-}
-.lot-card-closed {
-    background-color: color-mix(in srgb, var(--color-accent2), transparent);
-    padding: 3px 5px;
-}
-
-.content-container {
-    max-width: 80vw;
-    margin: auto;
-}
-.center-content-v {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.center-content-h {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
 }
 
 /* ===============================[Image loader]============================= */
@@ -726,17 +663,26 @@ header {
     font-size: 1.2rem;
     align-self: flex-end;
 }
-.user-item-actions .delete-btn {
-    background: var(--color-error);
-    color: var(--color-text);
+.edit-btn,
+.delete-btn {
+    color: var(--color-text) !important;
     border: none;
     padding: 0.3rem 0.8rem;
     cursor: pointer;
     font-size: 0.9rem;
     transition: background 0.2s;
 }
-.user-item-actions .delete-btn:hover {
-    background: color-mix(in srgb, var(--color-error), black 20%);
+.delete-btn {
+    background: var(--color-accent2);
+}
+.edit-btn {
+    background: var(--color-accent);
+}
+.delete-btn:hover {
+    background: color-mix(in srgb, var(--color-accent2), black 20%);
+}
+.edit-btn:hover {
+    background: color-mix(in srgb, var(--color-accent), black 20%);
 }
 
 .user-tabs {
@@ -791,4 +737,180 @@ header {
 .user-bet-end {
     color: var(--color-text2);
     font-size: 0.9rem;
+}
+
+/* ===============================[Main page]============================= */
+
+.lot-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(250px, 1fr));
+
+    gap: 10px;
+    padding: 30px 40px;
+}
+@media (max-width: 1650px) {
+    .lot-cards-grid {
+        grid-template-columns: repeat(3, minmax(240px, 1fr));
+    }
+}
+@media (max-width: 1250px) {
+    .lot-cards-grid {
+        grid-template-columns: repeat(1, minmax(240px, 1fr));
+    }
+}
+.lot-card {
+    --hover-shadow-offset-top: 0.5em;
+    --hover-shadow-offset-left: 0.4em;
+    --line-clamp: 2;
+
+    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    flex-grow: 1;
+    flex-basis: 250px;
+
+    padding: 15px;
+
+    /* height: 375px; */
+
+    border-width: 1px;
+    border-style: dashed;
+    border-color: var(--color-secondary);
+
+    transition: 200ms;
+}
+.lot-card:hover {
+    border-style: solid;
+    cursor: pointer;
+}
+.lot-card img {
+    object-fit:contain;
+    flex-grow: 1;
+    aspect-ratio: 1/1;
+}
+.lot-price {
+    color: var(--color-accent);
+    text-align: right;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+.lot-card .lot-price {
+    align-self: flex-end;
+}
+.lot-price::after {
+    content: " ₽";
+    color: inherit;
+    font-size: inherit;
+}
+.lot-card-end-time {
+    align-self: flex-end;
+    margin: 10px 0;
+}
+.lot-card-closed {
+    background-color: color-mix(in srgb, var(--color-accent2), transparent);
+    padding: 3px 5px;
+}
+
+.content-container {
+    max-width: 80vw;
+    margin: auto;
+}
+.center-content-v {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.center-content-h {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.main-layout {
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+
+    gap: 2rem;
+    padding: 1rem;
+}
+.lot-filters {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.filter-section {
+    margin-bottom: 1.5rem;
+}
+.filter-section p {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.sort-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 190px;
+}
+.lot-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 140px;
+}
+.tag-link {
+    padding: 0.3rem 0.7rem;
+    border: 1px dotted var(--color-secondary);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: 0.2s;
+
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+.tag-link:hover {
+    background: var(--color-secondary);
+}
+.tag-link.active {
+    background: var(--color-accent);
+    color: var(--color-black);
+    border-color: var(--color-accent);
+}
+.main-content {
+    flex: 1;
+}
+.search-bar {
+    margin-top: 1rem;
+}
+.search-bar input {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.4rem;
+}
+.page-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-secondary);
+    background: var(--color-secondary);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.page-btn:hover:not(:disabled) {
+    background: var(--color-accent);
+    color: var(--color-black);
+}
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.page-info {
+    color: var(--color-text2);
 }

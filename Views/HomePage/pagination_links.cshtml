@@ -1,0 +1,23 @@
+@model App.Models.HomePageModel;
+
+@if (Model.pages_count > 1) {
+    <div class="pagination">
+        <button class="page-btn" @(Model.query.page == 0 ? "disabled" : "")
+                hx-get="/lots"
+                hx-include="#filters-form input"
+                hx-target="#lot-cards-container"
+                hx-push-url="true"
+                hx-vals="js:{...get_query_with('page', @(Model.query.page - 1))}">
+            ← Предыдущая
+        </button>
+        <span class="page-info">Страница @(Model.query.page + 1) из @Model.pages_count</span>
+        <button class="page-btn" @(Model.query.page >= Model.pages_count - 1 ? "disabled" : "")
+                hx-get="/lots"
+                hx-include="#filters-form input"
+                hx-target="#lot-cards-container"
+                hx-push-url="true"
+                hx-vals="js:{...get_query_with('page', @(Model.query.page + 1))}">
+            Следующая →
+        </button>
+    </div>
+}

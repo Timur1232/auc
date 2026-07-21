@@ -12,5 +12,8 @@
     --color-bg: var(--color-primary);
     --color-shadow: var(--color-black);
     --color-error: #b00020;
+
+    --color-good: #04b020;
+    --color-accent-good: color-mix(in srgb, var(--color-good), rgba(255, 255, 255, 0.5));
 }
 

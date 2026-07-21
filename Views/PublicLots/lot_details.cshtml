@@ -49,6 +49,10 @@
             <div class="seller-info">
                 <span class="label">Продавец:</span>
                 <a href="/user/@Model.seller?.login">@(Model.seller?.login ?? "Неизвестно")</a>
+                @if (user != null && Model.lot.user_login == user.login) {
+                    <p>Вы продавец.</p>
+                    <a href="/lots/my/@Model.lot.id/edit" class="edit-btn">Редактировать</a>
+                }
             </div>
 
         </div>

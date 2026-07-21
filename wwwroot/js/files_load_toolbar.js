@@ -1,6 +1,5 @@
-'use strict';
-
-(function() {
+const files_toolbar = (function() {
+    'use strict';
     const t = ultra.tags;
 
     let files_state = new ultra.State([], 'files', {
@@ -111,5 +110,21 @@
         }
     });
 
+    async function url_to_file(url, filename, mime_type) {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Ошибка загрузки: ${response.status}`);
+        }
+        const blob = await response.blob();
+        const file = new File([blob], filename, { type: mime_type || blob.type });
+        return file;
+    }
+
     files_state.notify();
+
+    return {
+        url_to_file: url_to_file,
+        add_files: add_files,
+        remove_file_by_id: remove_file_by_id,
+    };
 })()

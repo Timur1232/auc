@@ -1,0 +1,126 @@
+@using App;
+@using App.Models;
+@using App.Extentions;
+
+@model App.Models.CreateFormData;
+
+<form class="form form-narrow" id="lot-edit-form"
+    enctype="multipart/form-data"
+
+    hx-patch="/lots/my/@(Model.current_lot.id)"
+    hx-target="#results"
+    hx-swap="innerHTML"
+>
+    <label for="name">Название</label>
+    <div class="form-field">
+        <input id="title" name="title" type="text" required autofocus value="@Model.current_lot.title" />
+    </div>
+
+    <label for="city">Город</label>
+    <div class="form-field">
+        <input id="city" name="city" type="text" required value="@Model.current_lot.city" />
+    </div>
+
+    <label for="count">Количество</label>
+    <div class="form-field">
+        <input id="count" name="count" type="number" step="1" min="1" required value="@Model.current_lot.count"/>
+    </div>
+
+    <label for="tag">Категория</label>
+    <div class="form-field">
+        <select name="tag_id" id="tag" required>
+            @{
+                var selected_tag_id = Model.current_lot.tag_id;
+                var select_tag = (uint tag_id) => tag_id == selected_tag_id ? "selected" : "";
+            }
+            <option value="">Выберите</option>
+            @foreach(var tag in @Model.tags) {
+                <option value="@tag.id" @(select_tag(tag.id))>@tag.name</option>
+            }
+        </select>
+    </div>
+
+    <label for="end_time">Дата окончания</label>
+    <div class="form-field">
+        <input id="end_time" name="end_time" type="datetime-local" required value="@(Model.current_lot.end_time.ToString("yyyy-MM-ddThh:mm"))" />
+    </div>
+
+    <label for"description">Описание</label>
+    <div class="form-field">
+        <textarea id="description" name="description" type="text">@Model.current_lot.description</textarea>
+    </div>
+
+    <label for="thumbnail">Обложка</label>
+    <div class="form-field">
+        <input id="thumbnail-input" name="thumbnail" type="file" accept="image/*" />
+        <div id="thumbnail-container" class="file-loader"></div>
+    </div>
+
+    <div class="file-load-toolbar">
+        <label for="images">Фото товара</label>
+        <button type="button" class="form-button" id="add-files">Добавить файлы</button>
+        <button type="button" class="form-reset" id="clear-files">Очистить файлы</button>
+        <div class="form-field file-loader">
+            <input id="files-input" name="images" type="file" multiple accept="image/*" hidden />
+            <div id="file-container" data-state="files" class="image-cards-container"></div>
+        </div>
+        <script src="/js/files_load_toolbar.js"></script>
+        <script src="/js/load_images_for_edit.js"></script>
+    </div>
+
+    <label for"payment_method">Метод оплаты</label>
+    <div class="form-field">
+        <select id="payment_method" name="payment_method" required>
+            @{
+                var selected_payment = Model.current_lot.payment_method;
+                var select_payment = (string pm) => pm == selected_payment ? "selected" : "";
+            }
+            <option value="" @(string.IsNullOrEmpty(selected_payment) ? "selected" : "")>Выберите</option>
+            @foreach (var p in G.EnumIterate<PaymentMethod>()) {
+                <option value="@p.ToString()" @(select_payment(p.ToString()))>@p.GetDescription()</option>
+            }
+        </select>
+    </div>
+
+    <label for"delivery_payment">Оплата доставки</label>
+    <div class="form-field">
+        <select id="delivery_payment" name="delivery_payment" required>
+            @{
+                var selected_delivery = Model.current_lot.delivery_payment;
+                var select_delivery = (string dm) => dm == selected_delivery ? "selected" : "";
+            }
+            <option value="" @(string.IsNullOrEmpty(selected_delivery) ? "selected" : "")>Выберите</option>
+            @foreach (var p in G.EnumIterate<DeliveryPayment>()) {
+                <option value="@p.ToString()" @(select_delivery(p.ToString()))>@p.GetDescription()</option>
+            }
+        </select>
+    </div>
+
+    <div id="results"></div>
+
+    <hr>
+
+    <button class="form-submit" type="submit" >Сохранить</button>
+    <button class="form-reset" type="reset">Вернуть</button>
+
+    <script src="/js/lot_form.js"></script>
+    <script src="/js/lot_edit.js"></script>
+    <script>
+        (async function() {
+            await load_images(
+                @foreach (var image in Model.current_lot.images.Skip(1)) {
+                    @Html.Raw($"'{image.image_path}',")
+                }
+            );
+
+            const thumbnail_path = '@Model.current_lot.images.FirstOrDefault()?.image_path';
+            const thumbnail = await files_toolbar.url_to_file(thumbnail_path, thumbnail_path.split('/').at(-1));
+            const dt = new DataTransfer();
+            dt.items.add(thumbnail);
+            const thumbnail_input = ultra.by_id('thumbnail-input');
+            thumbnail_input.files = dt.files;
+            thumbnail_input.dispatchEvent(new Event('change'));
+        })();
+    </script>
+
+</form>
