@@ -4,6 +4,9 @@ using App.Services;
 using App.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
+
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -21,6 +24,8 @@ builder.Services.AddDbContext<AuctionDbContext>(opt => {
 });
 
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddHostedService<AuctionClosingService>();
+builder.Services.AddHostedService<OrphanImagesKiller>();
 builder.Services.AddScoped<PasswordHasher>();
 
 builder.Services.AddAuthorizationBuilder()
@@ -44,7 +49,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 return Task.CompletedTask;
             },
             OnChallenge = c => {
-                c.Response.Redirect("/auth/login");
+                var req_path = Uri.EscapeDataString(c.Request.Path.ToString());
+                c.Response.Redirect($"/auth/login?saved_location={req_path}");
                 c.HandleResponse();
                 return Task.CompletedTask;
             }

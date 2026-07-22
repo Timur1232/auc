@@ -1,0 +1,63 @@
+@using App.Models;
+@using App.Extentions;
+@model App.Models.LotDetailsViewModel;
+@{
+    var saved_page = (string?)ViewData["page"] ?? "0";
+    var user = ViewData.GetUser();
+}
+
+<div class="content-container lot-detail">
+    <a href="/?page=@saved_page" class="back-link">← Вернуться</a>
+
+    <div class="lot-detail-grid">
+        @await Html.PartialAsync("images_gallery", Model.lot.images)
+
+        <div class="info">
+            <h1>@Model.lot.title</h1>
+
+            <div class="lot-price-details">
+                <span class="lot-price-label">Текущая цена:</span>
+                <span id="lot-price" class="lot-price">@Model.lot.current_price</span>
+            </div>
+
+            @await Html.PartialAsync("bid_maker", Model)
+
+            @if (Model.lot.closed && Model.lot.leader_login != null && user != null && user.login == Model.lot.leader_login) {
+                @if (Model.lot.status == LotStatus.WaitingPurchaseConfirm.ToString()) {
+                    <div id="purchase-button">
+                        <p style="margin-top:0;">Вы победили! Можете оставить заказ, чтобы забрать содержимое лота.</p>
+                        <p style="margin-top:30px;"><a class="button" href="/lots/my/@(Model.lot.id)/purchase">Оставить заказ</a></p>
+                    </div>
+                } else if (Model.lot.status == LotStatus.Purchased.ToString()) {
+                    <p style="margin-top:0;">Вы выкупили лот.</p>
+                } else if (Model.lot.status == LotStatus.Denied.ToString()) {
+                    <p style="margin-top:0;">Вы отказались от покупки.</p>
+                }
+            }
+
+            @await Html.PartialAsync("lot_meta", Model.lot)
+
+            <div class="lot-description">
+                <h3>Описание</h3>
+                @if (Model.lot.description != null) {
+                    <p>@Model.lot.description</p>
+                } else {
+                    <p>Нет описания</p>
+                }
+            </div>
+
+            <div class="seller-info">
+                <span class="label">Продавец:</span>
+                <a href="/user/@Model.seller?.login">@(Model.seller?.login ?? "Неизвестно")</a>
+                @if (user != null && Model.lot.user_login == user.login) {
+                    <p>Вы продавец.</p>
+                    <a href="/lots/my/@Model.lot.id/edit" class="edit-btn">Редактировать</a>
+                }
+            </div>
+
+        </div>
+    </div>
+    <div id="bid-history" class="bid-history">
+        @await Html.PartialAsync("bid_history", Model.lot.bids)
+    </div>
+</div>

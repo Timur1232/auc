@@ -2,7 +2,7 @@
 @using App.Extentions;
 @{
     var current_path = ViewData.GetCurrentPath();
-    var user = ViewData["user"] as User;
+    var user = ViewData.GetUser();
 }
 
 <nav class="header-nav">
@@ -16,10 +16,20 @@
             </a>
         </li>
         @if (user != null) {
+            @if (user.is_admin) {
+                <li class="header-link hover-shadow">
+                    <a href="/admin" class="@(current_path == "/admin" ? "link-decor" : null)">
+                        Админ
+                    </a>
+                </li>
+            }
             <li class="header-link hover-shadow">
-                <a href="/user" class="@(current_path == "/user" ? "link-decor" : null)">
+                <a href="/user" class="@(current_path == "/user/"+user?.login ? "link-decor" : null)">
                     Аккаунт
                 </a>
+            </li>
+            <li class="header-user-login">
+                @user.login
             </li>
             <li class="header-link hover-shadow">
                 <a href="/auth/logout?saved_location=@(current_path)"

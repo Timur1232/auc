@@ -1,23 +1,133 @@
-@model App.Models.HomePageModel
+@model App.Models.HomePageModel;
 @using App.Models;
 @{
     var user = ViewData["user"] as User;
 }
 
-<aside class="lot-filters">
-    <div class="lot-tags">
-        @foreach (var tag in @Model.tags) {
-            <a href="/?tag_id=@(tag.id)"
-                hx-get="/?tag_id=@(tag.id)"
-                hx-target="main"
-                hx-push-url="true"
-            >@tag.name</a>
-        }
-    </div>
-</aside>
+<form id="filters-form" class="filters-form">
+    <input type="hidden" name="page" value="@Model.query.page" />
+    <input type="hidden" name="page_size" value="@Model.query.page_size" />
+    <input type="hidden" name="tag_id" value="@(Model.query.tag_id)" />
+    <input type="hidden" name="search" value="@(Model.query.search ?? "")" />
+    <input type="hidden" name="sort_by" value="@Model.query.sort_by" />
+    <input type="hidden" name="sort_dir" value="@Model.query.sort_dir" />
+    <input type="hidden" name="show_closed" value="@(Model.query.show_closed ? "true" : "false")" />
+</form>
 
-<div class="lot-cards-grid">
-    @foreach (var card in @Model.cards) {
-        @await Html.PartialAsync("lot_card", card);
-    }
+<div class="main-layout">
+    <aside class="lot-filters">
+        <div class="filter-section">
+            <p>Категории</p>
+            <div class="lot-tags">
+                <a href="#" class="tag-link @(Model.query.tag_id == null ? "active" : "")"
+                    hx-get="/lots"
+                    hx-target="#lot-cards-container"
+                    hx-push-url="true"
+                    hx-on:click="activate_tag_links(this)"
+                    hx-vals="js:{...get_query_with('tag_id', '')}"
+                >
+                    Все
+                </a>
+                @foreach (var tag in Model.tags) {
+                    <a href="#" class="tag-link @(Model.query.tag_id == tag.id ? "active" : "")"
+                        hx-get="/lots"
+                        hx-target="#lot-cards-container"
+                        hx-push-url="true"
+                        hx-on:click="activate_tag_links(this)"
+                        hx-vals="js:{...get_query_with('tag_id', '@tag.id')}"
+                    >
+                        @tag.name
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <p>Фильтры</p>
+            <label>
+                <input type="checkbox" @(Model.query.show_closed ? "checked" : "")
+                       hx-trigger="change"
+                       hx-get="/lots"
+                       hx-target="#lot-cards-container"
+                       hx-push-url="true"
+                       hx-vals="js:{...get_query_with('show_closed', this.checked ? 'true' : 'false')}" />
+                Показывать закрытые
+            </label>
+
+            <hr>
+
+            <div class="sort-section">
+                <p>Сортировка</p>
+                <select class="form-like"
+                        hx-trigger="change"
+                        hx-get="/lots"
+                        hx-target="#lot-cards-container"
+                        hx-push-url="true"
+                        hx-vals="js:{...get_query_with('sort_by', this.value)}">
+                    <option value="end_time" selected="@(Model.query.sort_by == "end_time")">По времени</option>
+                    <option value="price" selected="@(Model.query.sort_by == "price")">По цене</option>
+                    <option value="title" selected="@(Model.query.sort_by == "title")">По названию</option>
+                </select>
+                <select class="form-like"
+                        hx-trigger="change"
+                        hx-get="/lots"
+                        hx-target="#lot-cards-container"
+                        hx-push-url="true"
+                        hx-vals="js:{...get_query_with('sort_dir', this.value)}">
+                    <option value="asc" selected="@(Model.query.sort_dir == "asc")">По возрастанию</option>
+                    <option value="desc" selected="@(Model.query.sort_dir == "desc")">По убыванию</option>
+                </select>
+            </div>
+
+            <hr>
+
+            <label>
+                <p>Элементов на странице</p>
+                <select class="form-like"
+                        hx-trigger="change"
+                        hx-get="/lots"
+                        hx-target="#lot-cards-container"
+                        hx-push-url="true"
+                        hx-vals="js:{...get_query_with('page_size', this.value)}"
+                >
+                    <option value="15" selected="@(Model.query.page_size == 15)">15</option>
+                    <option value="30" selected="@(Model.query.page_size == 30)">30</option>
+                </select>
+            </label>
+        </div>
+    </aside>
+    <div class="main-content">
+        <div class="search-bar">
+            <input class="form-like" type="text" name="search_input" placeholder="Поиск..." value="@(Model.query.search ?? "")"
+                   hx-trigger="input changed delay:500ms"
+                   hx-get="/lots"
+                   hx-target="#lot-cards-container"
+                   hx-push-url="true"
+                   hx-vals="js:{...get_query_with('search', this.value)}" />
+        </div>
+
+        <div id="pagination-links">
+            @await Html.PartialAsync("pagination_links", Model)
+        </div>
+
+        <div id="lot-cards-container">
+            @await Html.PartialAsync("lot_cards_grid", Model)
+        </div>
+    </div>
+
+    <script>
+        function get_query_with(name, value) {
+            ultra.by_selector(`#filters-form input[name="${name}"]`).value = value;
+            const inputs = ultra.by_selector_all('#filters-form input');
+            const values = Array.from(inputs).reduce((acc, i) => {
+                acc[i.name] = i.value;
+                return acc;
+            }, {});
+            return values;
+        }
+        function activate_tag_links(element) {
+            ultra.by_selector_all('.tag-link.active').forEach(t => t.$class_toggle('active'));
+            element.classList.toggle('active')
+        }
+    </script>
 </div>

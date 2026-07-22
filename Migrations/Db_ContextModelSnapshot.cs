@@ -17,10 +17,41 @@ namespace App.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
 
+            modelBuilder.Entity("App.Models.Bid", b =>
+                {
+                    b.Property<uint>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("lot_id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("user_login")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("lot_id");
+
+                    b.HasIndex("user_login");
+
+                    b.ToTable("bids");
+                });
+
             modelBuilder.Entity("App.Models.Lot", b =>
                 {
                     b.Property<uint>("id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("city")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("closed")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("count")
@@ -29,13 +60,27 @@ namespace App.Migrations
                     b.Property<decimal>("current_price")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("delivery_payment")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("description")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTimeOffset>("end_time")
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("initial_price")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("name")
+                    b.Property<string>("leader_login")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("payment_method")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("status")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -51,6 +96,12 @@ namespace App.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("id");
+
+                    b.HasIndex("leader_login");
+
+                    b.HasIndex("tag_id");
+
+                    b.HasIndex("user_login");
 
                     b.ToTable("lots");
                 });
@@ -70,7 +121,34 @@ namespace App.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("lot_id");
+
                     b.ToTable("lot_images");
+                });
+
+            modelBuilder.Entity("App.Models.Purchase", b =>
+                {
+                    b.Property<uint>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("locked_price")
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("lot_id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("user_login")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("lot_id");
+
+                    b.HasIndex("user_login");
+
+                    b.ToTable("purchases");
                 });
 
             modelBuilder.Entity("App.Models.Tag", b =>
@@ -99,6 +177,9 @@ namespace App.Migrations
                     b.Property<string>("email")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("is_admin")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("password_hash")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -109,6 +190,101 @@ namespace App.Migrations
                         .IsUnique();
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("App.Models.Bid", b =>
+                {
+                    b.HasOne("App.Models.Lot", "lot")
+                        .WithMany("bids")
+                        .HasForeignKey("lot_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Models.User", "user")
+                        .WithMany("bets")
+                        .HasForeignKey("user_login")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("lot");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("App.Models.Lot", b =>
+                {
+                    b.HasOne("App.Models.User", "leader")
+                        .WithMany()
+                        .HasForeignKey("leader_login");
+
+                    b.HasOne("App.Models.Tag", "tag")
+                        .WithMany("lots")
+                        .HasForeignKey("tag_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Models.User", "user")
+                        .WithMany("lots")
+                        .HasForeignKey("user_login")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("leader");
+
+                    b.Navigation("tag");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("App.Models.LotImage", b =>
+                {
+                    b.HasOne("App.Models.Lot", "lot")
+                        .WithMany("images")
+                        .HasForeignKey("lot_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("lot");
+                });
+
+            modelBuilder.Entity("App.Models.Purchase", b =>
+                {
+                    b.HasOne("App.Models.Lot", "lot")
+                        .WithMany()
+                        .HasForeignKey("lot_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Models.User", "user")
+                        .WithMany("purchases")
+                        .HasForeignKey("user_login")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("lot");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("App.Models.Lot", b =>
+                {
+                    b.Navigation("bids");
+
+                    b.Navigation("images");
+                });
+
+            modelBuilder.Entity("App.Models.Tag", b =>
+                {
+                    b.Navigation("lots");
+                });
+
+            modelBuilder.Entity("App.Models.User", b =>
+                {
+                    b.Navigation("bets");
+
+                    b.Navigation("lots");
+
+                    b.Navigation("purchases");
                 });
 #pragma warning restore 612, 618
         }
