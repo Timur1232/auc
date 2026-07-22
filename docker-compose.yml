@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auc
+      POSTGRES_DB: auk
     ports:
       - "5432:5432"
     volumes:
@@ -19,9 +19,9 @@ services:
   app:
     build: .
     container_name: auction-app
-    environment:
-      - ConnectionStrings__db_conn=Host=db;Port=5432;Database=auc;Username=postgres;Password=postgres
-      - ASPNETCORE_ENVIRONMENT=Production
+    # environment:
+      # ASPNETCORE_ENVIRONMENT: "Development"
+      # - ConnectionStrings__db_conn=Host=db;Port=5432;Database=auk;Username=postgres;Password=postgres
     ports:
       - "8080:8080"
     depends_on:

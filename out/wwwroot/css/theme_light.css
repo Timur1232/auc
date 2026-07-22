@@ -1,0 +1,16 @@
+:root {
+    --color-black: #141414;
+    --color-white: #F8F5F0;
+
+    --color-primary: #181818;
+    --color-secondary: #383838;
+    --color-text: var(--color-white);
+    --color-text2: var(--color-secondary);
+    --color-accent: #DDf00B;
+    --color-accent2: #DD200B;
+
+    --color-bg: var(--color-primary);
+    --color-shadow: var(--color-black);
+    --color-error: #b00020;
+}
+

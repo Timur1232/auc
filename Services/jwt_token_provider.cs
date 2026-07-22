@@ -33,7 +33,7 @@ public class JwtTokenService(IConfiguration configuration) : BackgroundService
         for (var i = indecies_to_remove.Count-1; i >= 0; i -= 1) {
             refresh_tokens.RemoveAt(i);
         }
-        G.Log(LogLevel.Info, "Refresh tokens updated");
+        Log.Info("Refresh tokens updated");
     }
 
     public static SecurityTokenDescriptor MakeTokenDescriptor(IConfiguration configuration, User user, DateTime expires)
@@ -86,7 +86,7 @@ public class JwtTokenService(IConfiguration configuration) : BackgroundService
     {
         var refresh = handler.CreateToken(token_descriptor);
         refresh_tokens.Add(refresh);
-        G.Log(LogLevel.Info, $"Refresh token added: count = {refresh_tokens.Count}");
+        Log.Info($"Refresh token added: count = {refresh_tokens.Count}");
         return refresh;
     }
 
@@ -110,7 +110,7 @@ public class JwtTokenService(IConfiguration configuration) : BackgroundService
 
         var stored_refresh = refresh_tokens.Find(r => r == refresh);
         if (stored_refresh == null) {
-            G.Log(LogLevel.Warning, "Refresh token not found in store");
+            Log.Warning("Refresh token not found in store");
             foreach (var t in refresh_tokens) {
                 Console.WriteLine(t);
             }
@@ -119,24 +119,24 @@ public class JwtTokenService(IConfiguration configuration) : BackgroundService
 
         var refresh_validated = await handler.ValidateTokenAsync(stored_refresh, validate_params);
         if (!refresh_validated.IsValid) {
-            G.Log(LogLevel.Warning, "Refresh token is invalid");
+            Log.Warning("Refresh token is invalid");
             return null;
         }
 
         var refresh_login = (string?)refresh_validated.Claims["user_login"];
         if (refresh_login == null) {
-            G.Log(LogLevel.Warning, "Not user_login in refresh token");
+            Log.Warning("Not user_login in refresh token");
             return null;
         }
 
         var token_login = handler.ReadJsonWebToken(token).Claims.FirstOrDefault(c => c.Type == "user_login");
         if (token_login == null) {
-            G.Log(LogLevel.Warning, "No user_login in jwt token");
+            Log.Warning("No user_login in jwt token");
             return null;
         }
 
         if (token_login.Value != refresh_login) {
-            G.Log(LogLevel.Warning, $"User logins not match: from jwt_token = {token_login.Value}, from refresh token = {refresh_login}");
+            Log.Warning($"User logins not match: from jwt_token = {token_login.Value}, from refresh token = {refresh_login}");
             return null;
         }
 
@@ -146,6 +146,6 @@ public class JwtTokenService(IConfiguration configuration) : BackgroundService
     public void RemoveRefreshToken(string refresh)
     {
         refresh_tokens.Remove(refresh);
-        G.Log(LogLevel.Info, $"Refresh token removed: count = {refresh_tokens.Count}");
+        Log.Info($"Refresh token removed: count = {refresh_tokens.Count}");
     }
 }

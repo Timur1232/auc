@@ -30,7 +30,7 @@ public class AuctionClosingService(IServiceScopeFactory scope_factory) : Backgro
 
             await db.SaveChangesAsync();
         } catch (Exception e) {
-            G.Log(LogLevel.Error, e.Message);
+            Log.Error(e.Message);
         }
     }
 }

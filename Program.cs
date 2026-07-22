@@ -1,25 +1,29 @@
 using Microsoft.EntityFrameworkCore;
+using App;
 using App.Services;
 using App.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
 
+
 CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
+
+if (builder.Environment.IsDevelopment()) {
+    Log.Info( "App in development mode");
+} else {
+    Log.Info( "App in production mode");
+}
 
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
 
 builder.Services.AddDbContext<AuctionDbContext>(opt => {
     var conn_string = config.GetConnectionString("db_conn");
-    if (builder.Environment.IsDevelopment()) {
-        opt.UseSqlite(conn_string);
-    } else {
-        opt.UseNpgsql(conn_string);
-    }
+    opt.UseNpgsql(conn_string);
 });
 
 builder.Services.AddScoped<JwtTokenService>();
@@ -60,7 +64,11 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope()) {
     var db = scope.ServiceProvider.GetRequiredService<AuctionDbContext>();
-    await db.Database.MigrateAsync();
+    var pending_migrations = await db.Database.GetPendingMigrationsAsync();
+    if (pending_migrations.Any()) {
+        Log.Info("Migrating database");
+        await db.Database.MigrateAsync();
+    }
 }
 
 app.UseHttpsRedirection();
@@ -68,12 +76,5 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapControllers();
-
-if (builder.Environment.IsDevelopment()) {
-    using (var scope = app.Services.CreateScope()) {
-        var db = scope.ServiceProvider.GetRequiredService<AuctionDbContext>();
-        await db.Database.MigrateAsync();
-    }
-}
 
 app.Run();

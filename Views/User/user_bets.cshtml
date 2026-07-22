@@ -11,10 +11,10 @@
 } else {
     <div class="user-list">
         @foreach (var bet in Model) {
-            @if (rendered_lots.Contains(bet.lot.id)) {
+            @if (rendered_lots.Contains(bet.lot!.id)) {
                 continue;
             } else {
-                rendered_lots.Add(bet.lot.id);
+                rendered_lots.Add(bet.lot!.id);
             }
             <div class="user-list-item" onclick="ultra.from_dom(this).$by_selector('.user-item-info a').click()">
                 <div class="user-item-thumb">

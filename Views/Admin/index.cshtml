@@ -1,5 +1,5 @@
 @using App.Models;
-@model App.Models.AdminPageModel;
+@model App.Models.AdminPageData;
 
 <div class="content-container">
     <h1>Управление категориями</h1>
@@ -7,7 +7,7 @@
     <div class="admin-controls">
         <div class="search-bar">
             <input class="form-like" type="text" id="admin-search" placeholder="Поиск категорий..."
-                   value="@Model.Search"
+                   value="@Model.search"
                    hx-get="/admin"
                    hx-trigger="input changed delay:300ms"
                    hx-target="#tag-list-container"

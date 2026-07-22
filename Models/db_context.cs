@@ -62,7 +62,7 @@ public class AuctionDbContext(DbContextOptions opt) : DbContext(opt)
         try {
             await SaveChangesAsync();
         } catch (Exception e) {
-            G.Log(LogLevel.Error, e.ToString());
+            Log.Error(e.ToString());
             return false;
         }
         return true;

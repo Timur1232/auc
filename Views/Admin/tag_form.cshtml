@@ -1,6 +1,6 @@
-@model App.Models.AdminPageModel
+@model App.Models.AdminPageData
 
-@if (Model.Success) {
+@if (Model.success) {
     <div id="tag-list-container" hx-swap-oob="true">
         @await Html.PartialAsync("tag_list", Model)
     </div>
@@ -17,7 +17,7 @@
     </div>
     <button class="form-submit" type="submit">Создать</button>
     <div id="create-errors">
-        @if (Model.Success) {
+        @if (Model.success) {
             @await Html.PartialAsync("good_results")
         } else {
             @await Html.PartialAsync("errors")

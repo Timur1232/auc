@@ -17,11 +17,11 @@ public class AdminController(AuctionDbContext db) : Controller
     public async Task<IActionResult> GetPage([FromQuery] string? search)
     {
         var tags = await tags_model.GetAll(search);
-        var model = new AdminPageModel { Tags = tags, Search = search };
+        var data = new AdminPageData { tags = tags, search = search };
         if (Request.IsHtmx()) {
-            return View("tag_list", model);
+            return View("tag_list", data);
         }
-        return View("index", model);
+        return View("index", data);
     }
 
     [HttpPost]
@@ -29,18 +29,18 @@ public class AdminController(AuctionDbContext db) : Controller
     {
         var (tag, errors) = await tags_model.CreateTag(req);
 
-        var model = new AdminPageModel { Search = search };
+        var data = new AdminPageData { search = search };
 
         if (errors.Count > 0 || tag == null) {
             ViewData["errors"] = errors;
-            return View("tag_form", model);
+            return View("tag_form", data);
         }
 
         ViewData["result_messages"] = "Категория успешно создана!";
         var tags = await tags_model.GetAll(search);
-        model.Tags = tags;
-        model.Success = true;
-        return View("tag_form", model);
+        data.tags = tags;
+        data.success = true;
+        return View("tag_form", data);
 
     }
 
@@ -50,7 +50,7 @@ public class AdminController(AuctionDbContext db) : Controller
         var (tag, err) = await tags_model.DeleteById(tag_id);
         if (err != ModelError.None || tag == null) {
             Response.StatusCode = 400;
-            G.Log(LogLevel.Error, err.GetMessage());
+            Log.Error(err.GetMessage());
             return Content(err.GetMessage());
         }
         return Ok();
@@ -62,7 +62,7 @@ public class AdminController(AuctionDbContext db) : Controller
         var (updated_tag, errors) = await tags_model.UpdateById(tag_id, req);
         if (errors.Count > 0 || updated_tag == null) {
             ViewData["errors"] = errors;
-            return View("tag_edit_form", new AdminPageModel { Success = false, Search = search });
+            return View("tag_edit_form", new AdminPageData { success = false, search = search });
         }
         return View("tag_item", updated_tag);
     }
@@ -72,9 +72,9 @@ public class AdminController(AuctionDbContext db) : Controller
     {
         var tag = await db.tags.FindAsync(tag_id);
         if (tag == null) return NotFound();
-        var form_data = new TagEditForm {
-            Name = tag.name,
-            TagId = tag.id,
+        var form_data = new TagEditFormData {
+            name = tag.name,
+            tag_id = tag.id,
         };
         return View("tag_edit_form", form_data);
     }

@@ -32,16 +32,15 @@ public class HomePageModel
 public class CreateFormData
 {
     public List<Tag> tags = new();
-    public Lot? current_lot = null;
 }
 
-public class TagNavigation
+public class EditFormData
 {
-    public uint id;
-    public required string name;
+    public List<Tag> tags = new();
+    public required Lot current_lot;
 }
 
-public class LotDetailsViewModel
+public class LotDetailsData
 {
     public Lot lot = new();
     public List<LotImage> images = new();
@@ -64,16 +63,16 @@ public class UserLotCard
     public string? thumbnail_path;
 }
 
-public class AdminPageModel
+public class AdminPageData
 {
-    public List<Tag> Tags { get; set; } = new();
-    public string? Search { get; set; }
-    public bool Success { get; set; }
+    public List<Tag> tags { get; set; } = new();
+    public string? search { get; set; }
+    public bool success { get; set; }
 }
 
-public class TagEditForm
+public class TagEditFormData
 {
-    public uint TagId { get; set; }
-    public string Name {get; set;} = null!;
-    public bool Success {get; set;}
+    public uint tag_id { get; set; }
+    public string name {get; set;} = null!;
+    public bool success {get; set;}
 }

@@ -1,16 +1,16 @@
-@model App.Models.TagEditForm
+@model App.Models.TagEditFormData
 
-<form class="form" method="post" action="/admin/@Model.TagId"
-      hx-patch="/admin/@Model.TagId"
+<form class="form" method="post" action="/admin/@Model.tag_id"
+      hx-patch="/admin/@Model.tag_id"
       hx-target="this"
       hx-swap="outerHTML">
     <div class="form-field" style="display:flex; gap:10px; align-items:center;">
         <input class="form-like" name="name" type="text" required
-               value="@Model.Name" />
+               value="@Model.name" />
         <button class="form-submit" type="submit">Сохранить</button>
         <button class="form-reset" type="button"
                 hx-get="/admin?search=@(ViewBag.Search ?? "")"
-                hx-target="#tag-row-@Model.TagId"
+                hx-target="#tag-row-@Model.tag_id"
                 hx-swap="outerHTML">
             Отмена
         </button>

@@ -25,7 +25,7 @@ public class PublicLotsController(AuctionDbContext db, IWebHostEnvironment env) 
         var current_user = HttpContext.GetUser();
         var is_owner = current_user?.login == lot.user_login;
 
-        var vm = new LotDetailsViewModel {
+        var vm = new LotDetailsData {
             lot = lot,
             images = images,
             seller = seller,
@@ -45,7 +45,7 @@ public class PublicLotsController(AuctionDbContext db, IWebHostEnvironment env) 
             return NotFound();
         }
 
-        var data = new LotDetailsViewModel {
+        var data = new LotDetailsData {
             lot = lot,
             seller = lot.user,
             images = lot.images.ToList(),
@@ -72,7 +72,7 @@ public class PublicLotsController(AuctionDbContext db, IWebHostEnvironment env) 
             return NotFound();
         }
 
-        var data = new LotDetailsViewModel {
+        var data = new LotDetailsData {
             lot = lot,
             seller = lot.user,
             images = lot.images.ToList(),
@@ -223,9 +223,9 @@ public class UserLotsController(AuctionDbContext db, IWebHostEnvironment env) : 
         }
         var tags = await db.tags.ToListAsync();
 
-        var data = new CreateFormData {
-            current_lot = lot,
+        var data = new EditFormData {
             tags = tags,
+            current_lot = lot,
         };
 
         return View("edit_form", data);

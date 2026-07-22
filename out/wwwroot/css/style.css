@@ -1,0 +1,920 @@
+:root {
+    --default-transition-time: 200ms;
+    --hover-shadow-default-offset: 0.3em;
+    --default-line-clamp: none;
+}
+
+@font-face {
+    font-family: Cormorant;
+    src: url("/fonts/Cormorant/Cormorant-VariableFont_wght.ttf");
+    font-weight: 400;
+}
+@font-face {
+    font-family: Forum;
+    src: url("/fonts/Forum/Forum-Regular.ttf");
+}
+
+/* ======================= reset.css ======================= */
+
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* ============================================================ */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.line-clamp,
+p {
+    /* overflow: hidden; */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--line-clamp, var(--default-line-clamp));
+    line-clamp: var(--line-clamp, var(--default-line-clamp));
+    text-overflow: ellipsis;
+}
+
+a:link,
+a:visited,
+a {
+    text-decoration: none;
+    color: var(--color-accent);
+}
+a:hover {
+    text-decoration: underline;
+}
+a.link-decor::after,
+a.link-decor::before,
+a.link-decor:hover::after,
+a.link-decor:hover::before {
+    content: "~";
+    display: inline-block;
+    color: inherit;
+    margin-left: 0.25em;
+    margin-right: 0.25em;
+    text-decoration-line: none;
+    text-decoration-thickness: 0;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px dashed var(--color-secondary);
+}
+
+.hover-shadow,
+.shadow {
+    position: relative;
+}
+.hover-shadow::before,
+.shadow::before {
+    content: '';
+    opacity: 100%;
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--color-black) 0px,
+        var(--color-black) 8px,
+        transparent 8px,
+        transparent 10px
+        );
+    z-index: -1;
+    pointer-events: none;
+}
+.hover-shadow::before {
+    opacity: 0%;
+    top: 0em;
+    left: 0em;
+    transition: var(--transition-time, var(--default-transition-time));
+}
+.hover-shadow:hover::before {
+    opacity: 75%;
+    top: var(--hover-shadow-offset-top, var(--hover-shadow-default-offset));
+    left: var(--hover-shadow-offset-left, var(--hover-shadow-default-offset));
+    transition: var(--transition-time, var(--default-transition-time));
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* ===============================[Form]============================= */
+
+.form {
+    margin: 40px auto;
+    padding: 20px 30px;
+    background-color: var(--color-bg);
+}
+.form.form-boxed {
+    max-width: 400px;
+    border: 2px dotted var(--color-secondary);
+}
+.form.form-narrow {
+    max-width: 600px;
+}
+.form-title {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.form-description {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: var(--color-text2);
+}
+.form p {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.form label {
+    display: block;
+    padding-top: 6px;
+    padding-bottom: 8px;
+    font-weight: normal;
+}
+input.form-like,
+select.form-like,
+textarea.form-like,
+.form input,
+.form select,
+.form textarea {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid var(--color-secondary);
+    box-sizing: border-box;
+    font-size: inherit;
+    font-family: inherit;
+    background: var(--color-secondary);
+    color: var(--color-text);
+}
+textarea.form-like,
+.form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+input.form-like:focus,
+select.form-like:focus,
+textarea.form-like:focus,
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
+    outline-style: dashed;
+    outline-color: var(--color-accent);
+    outline-width: 2px;
+}
+.form-field {
+    position: relative;
+    margin-bottom: 10px;
+}
+.form-field:has(input[required])::before,
+.form-field:has(select[required])::before,
+.form-field:has(textarea[required])::before {
+    content: "*";
+    font-size: 18px;
+    position: absolute;
+    left: -0.75em;
+    top: 50%;
+    transform: translateY(-0.3rem);
+    color: var(--color-accent);
+    pointer-events: none;
+}
+.file-loader {
+    padding: 10px;
+    margin: 10px 0 15px 0;
+
+    border-width: 1px;
+    border-style: dotted;
+    border-color: var(--color-secondary);
+}
+#thumbnail-container:not(.file-loader) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+.form-submit,
+.form-button,
+.button,
+.form-reset {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px 24px;
+    border: 1px solid var(--color-secondary);
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    background: var(--color-secondary);
+    color: var(--color-text);
+}
+.form-reset:hover {
+    background: var(--color-accent2);
+    color: var(--color-black);
+}
+.form-submit:hover,
+.button:hover,
+.form-button:hover {
+    background: var(--color-accent);
+    color: var(--color-black);
+}
+.form-good,
+.form-error {
+    display: block;
+    padding: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+    border-style: dotted;
+    border-width: 2px;
+}
+.form-error {
+    background-color: var(--color-error);
+    border-color: var(--color-accent2);
+}
+.form-good {
+    background-color: var(--color-good);
+    border-color: var(--color-accent-good);
+}
+
+.hidden {
+    display: none;
+}
+
+/* ===============================[Header]============================= */
+
+header {
+    height: 40px;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+
+    border-bottom: solid 2px var(--color-secondary);
+    box-shadow: 0 0.75em 3em color-mix(in srgb, var(--color-secondary), transparent);
+    z-index: -1000;
+}
+#logo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 15px;
+}
+#logo a {
+    font-size: 1.8em;
+    font-weight: 1000;
+    font-style: italic;
+
+    color: var(--color-text);
+    letter-spacing: 5px;
+}
+#logo a:hover {
+    color: var(--color-accent);
+}
+.header-nav {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.header-nav-pages {
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 10px;
+}
+.header-link {
+    position: relative;
+    top: 0px;
+    height: 100%;
+    background-color: var(--color-bg);
+
+    display: flex;
+    align-items: stretch;
+    justify-items: stretch;
+
+    padding-left: 10px;
+    padding-right: 10px;
+
+    outline-style: dashed;
+    outline-width: 1px;
+    outline-color: var(--color-secondary);
+
+    transition: all var(--transition-time);
+}
+.header-link a {
+    display: inline-flex;
+    align-items: center;
+}
+.header-link:hover {
+    outline-style: solid;
+}
+.login-button {
+    align-self: flex-end;
+    margin-right: 5vh;
+}
+.header-user-login {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    margin-left: 25px;
+}
+
+/* ===============================[Image loader]============================= */
+
+.image-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+
+    padding: 5px;
+    gap: 10px;
+}
+.image-card {
+    position: relative;
+    max-width: 250px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.image-card .preview {
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+}
+.image-card .preview img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+}
+.image-card .file-name {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.image-card .file-size {
+    color: var(--color-text2);
+}
+.image-card .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: var(--color-accent2);
+    color: var(--color-text);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    backdrop-filter: blur(2px);
+}
+
+/* ===============================[Lot details]============================= */
+
+.lot-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+.gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.main-image-container {
+    background: var(--color-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.main-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.thumbnails-container {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.thumbnail-item {
+    width: 60px;
+    height: 60px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.thumbnail-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.thumbnail-item.active {
+    border-color: var(--color-accent);
+}
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.info h1 {
+    font-size: 1.8rem;
+    margin: 0;
+}
+.bid-form {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+    align-items: center;
+}
+.bid-form .form-field {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+.bid-notice {
+    color: var(--color-accent2);
+    font-style: italic;
+}
+.lot-price-details {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+.lot-price-label {
+    font-size: 1.3em;
+    margin-right: 15px;
+}
+.lot-price-details .lot-price {
+    font-size: 1.7em;
+    text-align: left;
+}
+.lot-meta {
+    padding: 0.5rem 0;
+}
+.lot-meta p {
+    margin: 10px 0;
+}
+.lot-meta .label {
+    color: var(--color-text2);
+    margin-right: 0.5rem;
+}
+.lot-description,
+.lot-characteristics,
+.bid-history {
+    border-top: 1px dashed var(--color-secondary);
+    padding-top: 0.5rem;
+}
+.lot-description h3,
+.lot-characteristics h3,
+.bid-history h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    color: var(--color-text2);
+}
+.seller-info {
+    margin-top: 0.5rem;
+}
+.back-link {
+    display: inline-block;
+    margin: 1rem 0 0.5rem 1rem;
+    transition: color 0.2s;
+}
+.bid-history {
+    margin-top: 40px;
+}
+.bid-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+}
+.bid-history-item {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+.bid-history-item-index {
+    color: var(--color-text2);
+    min-width: 25px;
+}
+.bid-history-item-user {
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bid-history-item .lot-price {
+    font-size: 1em;
+    color: var(--color-text);
+}
+.lot-price.highlight,
+.highlight {
+    color: var(--color-accent);
+}
+@media (max-width: 768px) {
+    .lot-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===============================[User info]============================= */
+
+.user-info {
+    margin: 40px 0;
+}
+.user-lots {
+    margin-top: 40px;
+}
+.user-lots h2 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.user-list-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border: 1px dashed var(--color-secondary);
+    transition: background 0.2s;
+    cursor: pointer;
+}
+.user-list-item:hover {
+    background: var(--color-secondary);
+}
+.user-item-clickable {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 1rem;
+}
+.user-item-thumb {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.user-item-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.user-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.user-item-info a {
+    font-weight: bold;
+    color: var(--color-text);
+    flex-grow: 1;
+
+    word-wrap: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.user-item-info .lot-price {
+    font-size: 1.2rem;
+    align-self: flex-end;
+}
+.edit-btn,
+.delete-btn {
+    color: var(--color-text) !important;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+.delete-btn {
+    background: var(--color-accent2);
+}
+.edit-btn {
+    background: var(--color-accent);
+}
+.delete-btn:hover {
+    background: color-mix(in srgb, var(--color-accent2), black 20%);
+}
+.edit-btn:hover {
+    background: color-mix(in srgb, var(--color-accent), black 20%);
+}
+
+.user-tabs {
+    margin-top: 20px;
+    padding-top: 10px;
+}
+.tabs-header {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--color-secondary);
+    margin-bottom: 1rem;
+}
+.tab-btn {
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--color-text2);
+    transition: 0.2s;
+}
+.tab-btn:hover {
+    color: var(--color-text);
+}
+.tab-btn.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+}
+
+.leader-badge {
+    background: var(--color-accent);
+    color: var(--color-black);
+    padding: 0.1rem 0.5rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: inline-block;
+    width: fit-content;
+}
+.outbid .lot-price {
+    font-size: 1.2rem;
+    color: var(--color-accent2);
+}
+.outbid-badge {
+    background: var(--color-error);
+    color: var(--color-text);
+    padding: 0.1rem 0.5rem;
+    font-size: 0.8rem;
+    display: inline-block;
+    width: fit-content;
+}
+.user-bet-end {
+    color: var(--color-text2);
+    font-size: 0.9rem;
+}
+
+/* ===============================[Main page]============================= */
+
+.lot-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(250px, 1fr));
+
+    gap: 10px;
+    padding: 30px 40px;
+}
+@media (max-width: 1650px) {
+    .lot-cards-grid {
+        grid-template-columns: repeat(3, minmax(240px, 1fr));
+    }
+}
+@media (max-width: 1250px) {
+    .lot-cards-grid {
+        grid-template-columns: repeat(1, minmax(240px, 1fr));
+    }
+}
+.lot-card {
+    --hover-shadow-offset-top: 0.5em;
+    --hover-shadow-offset-left: 0.4em;
+    --line-clamp: 2;
+
+    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    flex-grow: 1;
+    flex-basis: 250px;
+
+    padding: 15px;
+
+    /* height: 375px; */
+
+    border-width: 1px;
+    border-style: dashed;
+    border-color: var(--color-secondary);
+
+    transition: 200ms;
+}
+.lot-card:hover {
+    border-style: solid;
+    cursor: pointer;
+}
+.lot-card img {
+    object-fit:contain;
+    flex-grow: 1;
+    aspect-ratio: 1/1;
+}
+.lot-price {
+    color: var(--color-accent);
+    text-align: right;
+    font-size: 1.4em;
+    font-weight: bold;
+}
+.lot-card .lot-price {
+    align-self: flex-end;
+}
+.lot-price::after {
+    content: " ₽";
+    color: inherit;
+    font-size: inherit;
+}
+.lot-card-end-time {
+    align-self: flex-end;
+    margin: 10px 0;
+}
+.lot-card-closed {
+    background-color: color-mix(in srgb, var(--color-accent2), transparent);
+    padding: 3px 5px;
+}
+
+.content-container {
+    max-width: 80vw;
+    margin: auto;
+}
+.center-content-v {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.center-content-h {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.main-layout {
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+
+    gap: 2rem;
+    padding: 1rem;
+}
+.lot-filters {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.filter-section {
+    margin-bottom: 1.5rem;
+}
+.filter-section p {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.sort-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 190px;
+}
+.lot-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 140px;
+}
+.tag-link {
+    padding: 0.3rem 0.7rem;
+    border: 1px dotted var(--color-secondary);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: 0.2s;
+
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+.tag-link:hover {
+    background: var(--color-secondary);
+}
+.tag-link.active {
+    background: var(--color-accent);
+    color: var(--color-black);
+    border-color: var(--color-accent);
+}
+.main-content {
+    flex: 1;
+}
+.search-bar {
+    margin-top: 1rem;
+}
+.search-bar input {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.4rem;
+}
+.page-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-secondary);
+    background: var(--color-secondary);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.page-btn:hover:not(:disabled) {
+    background: var(--color-accent);
+    color: var(--color-black);
+}
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.page-info {
+    color: var(--color-text2);
+}

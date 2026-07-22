@@ -38,7 +38,7 @@ public class OrphanImagesKiller : BackgroundService
             foreach (var file in files) {
                 if (!images.Contains(file)) {
                     images_to_delete.Add(file);
-                    G.Log(LogLevel.Info, $"Deleting orphan image: {file}");
+                    Log.Info($"Deleting orphan image: {file}");
                 }
             }
 
@@ -49,7 +49,7 @@ public class OrphanImagesKiller : BackgroundService
                 }
             }
         } catch (Exception e) {
-            G.Log(LogLevel.Error, e.Message);
+            Log.Error(e.Message);
         }
     }
 }

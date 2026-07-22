@@ -5,7 +5,7 @@
 } else {
     <div class="user-list">
         @foreach (var purchase in Model) {
-            <div class="user-list-item" id="lot-@purchase.lot.id">
+            <div class="user-list-item" id="lot-@purchase.lot!.id">
                 <div class="user-item-thumb">
                     <img src="@(purchase.lot.images.FirstOrDefault()?.image_path ?? "/images/no-image.png")" alt="" />
                 </div>

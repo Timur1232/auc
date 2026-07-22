@@ -1,5 +1,5 @@
 @using App.Extentions;
-@model App.Models.LotDetailsViewModel;
+@model App.Models.LotDetailsData;
 @{
     var min_bid_str = (Model.lot.current_price + 0.01M).ToString("0.00");
     var user = ViewData.GetUser();

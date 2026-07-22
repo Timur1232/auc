@@ -15,7 +15,7 @@ public static class MyExtentions
     }
 
     public const string MAIN_LAYOUT_NAME = "main";
-    public static readonly ViewPath layout_path = new ViewPath{ path_prefix = "/Views/Layouts/" };
+    public static readonly ViewPath layout_path = new ViewPath{ path_prefix = "Views/Layouts/" };
 
     extension(ViewDataDictionary view_data) {
         public void SetLayout(string layout_name = MAIN_LAYOUT_NAME) => view_data["layout"] = layout_path.GetPath(layout_name);
