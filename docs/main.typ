@@ -175,8 +175,7 @@ locked_price (цена, по которой была совершена поку
 СУБД, а использование индексов по внешним ключам и уникальных ограничений (на
 email пользователя и имя категории) гарантирует производительность и отсутствие
 дублирования критически важных значений. В результате была получена логически
-упорядоченная структура базы данных, которая соответствует требованиям сайта
-магазина музыкальных инструментов.
+упорядоченная структура базы данных, которая соответствует требованиям сайта.
 
 == Модуль авторизации
 
@@ -245,6 +244,8 @@ URL или на главную страницу.
 // его нет, а пользователь не успел обновить его, то идет автоматическое
 // перенаправление с защищенных путей на форму входа.
 
+Скриншоты страниц представлены в #link(<appendix_b>)[Приложении Б].
+
 Таким образом реализован функциональнал регистрации и авторизации пользователя.
 
 == Модуль пользователя
@@ -285,7 +286,7 @@ URL или на главную страницу.
 // Через этот модуль пользователь имеет возможность редактировать и удалять
 // созданные лоты.
 
-Скриншоты страниц представлены в 
+Скриншоты страниц представлены в #link(<appendix_b>)[Приложении Б].
 
 Таким образом реализован функционал доступа к личному кабинету пользователя.
 
@@ -344,6 +345,8 @@ URL или на главную страницу.
 могли завершить сделку, а вторая находит и удаляет с диска изображения-сироты,
 которые были прикреплены к удаленному лоту.
 
+Скриншоты страниц представлены в #link(<appendix_b>)[Приложении Б].
+
 == Модуль администратора
 
 Модуль администратора предназначен для управления категориями лотов и доступен
@@ -358,6 +361,8 @@ URL или на главную страницу.
 динамического обновления списка без перезагрузки страницы. Интерфейс
 администратора интуитивно понятен и позволяет быстро поддерживать актуальную
 структуру каталога, что упрощает навигацию для конечных пользователей.
+
+Скриншоты страниц представлены в #link(<appendix_b>)[Приложении Б].
 
 == Контейнеризация
 
@@ -383,19 +388,17 @@ Docker.
 контейнерах Docker, что гарантирует воспроизводимость среды и упрощает
 установку.
 
-Ключевая функциональность охватывает регистрацию и аутентификацию пользователей
+Основная функциональность включает регистрацию и аутентификацию пользователей
 на основе JWT-токенов с автоматическим обновлением сессии, создание и
 управление лотами (просмотр, фильтрация, поиск, сортировка, редактирование,
 удаление), участие в торгах с валидацией ставок (проверка превышения текущей
 цены, запрет ставок на свой лот, предотвращение дублирования), отмену последней
 неперебитой ставки, а также завершение торгов с выбором выкупа или отказа. Для
 пользователей реализован личный кабинет с просмотром созданных лотов, истории
-ставок и покупок; администраторы могут управлять категориями. Архитектурно
-проект демонстрирует применение принципов MVC, безопасное хранение данных
-(хеширование паролей bcrypt, JWT-аутентификация), строгую валидацию входящих
-данных и транзакционную обработку операций со ставками. Разработанное решение
-соответствует функциональным требованиям и готово к практическому
-использованию.
+ставок и покупок. Администраторы могут управлять категориями. Архитектурно
+проект демонстрирует применение принципов MVC, безопасное хранение данных,
+строгую валидацию входящих данных и транзакционную обработку операций со
+ставками.
 
 #pagebreak()
 #section_head(numbering: false)[СПИСОК ИСТОЧНИКОВ]
@@ -445,77 +448,79 @@ Docker.
 #pagebreak()
 #section_head(numbering: false)[ПРИЛОЖЕНИЕ Б. Исходный код приложения] <appendix_b>
 
-// #figi("./imgs/home_page.png",       [Главная страница])
-// #figi("./imgs/show_hidden.png",     [Вывод закрыты лотов])
-// #figi("./imgs/tag_filter.png",      [Фильтр по категориям])
-// #figi("./imgs/create_form1.png",    [Форма создания 1])
-// #figi("./imgs/create_fomr2.png",    [Форма создания 2])
-// #figi("./imgs/this_user_lots.png",  [Созданные пользователем лоты])
-// #figi("./imgs/lot_details.png",     [Просмотр деталей лота])
-// #figi("./imgs/bet_made.png",        [Ставка сделана])
-// #figi("./imgs/bet_history.png",     [История ставок])
-// #figi("./imgs/user_bets.png",       [Ставки пользователя])
-// #figi("./imgs/other_user_lots.png", [Лоты другого пользователя])
-// #figi("./imgs/win1.png",            [Победа в торгах])
-// #figi("./imgs/win2.png",            [Победа в торгах (в личном кабинете пользователя)])
-// #figi("./imgs/purchases.png",       [Список покупок пользователя])
-// #figi("./imgs/admin_tags.png",      [Панель редактирования категорий])
-// #figi("./imgs/search_tags.png",     [Поиск категорий])
-// #figi("./imgs/create_tag.png",      [Создание категории])
-// #figi("./imgs/redact_tag.png",      [Редактирование категории])
+#figi("login.png",           [Форма входа], width: 60%)
+#figi("register.png",        [Форма регистрации])
+#figi("home_page.png",       [Главная страница])
+#figi("show_hidden.png",     [Вывод закрыты лотов])
+#figi("tag_filter.png",      [Фильтр по категориям])
+#figi("create_form1.png",    [Форма создания 1], width: 50%)
+#figi("create_fomr2.png",    [Форма создания 2], width: 50%)
+#figi("this_user_lots.png",  [Созданные пользователем лоты])
+#figi("lot_details.png",     [Просмотр деталей лота])
+#figi("bet_made.png",        [Ставка сделана])
+#figi("bet_history.png",     [История ставок])
+#figi("user_bets.png",       [Ставки пользователя])
+#figi("other_user_lots.png", [Лоты другого пользователя])
+#figi("win1.png",            [Победа в торгах])
+#figi("win2.png",            [Победа в торгах (в личном кабинете пользователя)])
+#figi("purchases.png",       [Список покупок пользователя])
+#figi("admin_tags.png",      [Панель редактирования категорий])
+#figi("search_tags.png",     [Поиск категорий])
+#figi("create_tag.png",      [Создание категории])
+#figi("redact_tag.png",      [Редактирование категории])
 
 #pagebreak()
 #section_head(numbering: false)[ПРИЛОЖЕНИЕ В. Исходный код приложения] <appendix_d>
 
-// #listing_code_file("./Program.cs")
-// #listing_code_file("./Views/Auth/register.cshtml")
-// #listing_code_file("./Config.cs")
-// #listing_code_file("./Controllers/auth.cs")
-// #listing_code_file("./Controllers/user.cs")
-// #listing_code_file("./Controllers/lots.cs")
-// #listing_code_file("./Controllers/admin.cs")
-// #listing_code_file("./Controllers/home.cs")
-// #listing_code_file("./Models/auth.cs")
-// #listing_code_file("./Models/db_context.cs")
-// #listing_code_file("./Models/models.cs")
-// #listing_code_file("./Models/tags.cs")
-// #listing_code_file("./Models/view_models.cs")
-// #listing_code_file("./Models/lots.cs")
-// #listing_code_file("./Properties/launchSettings.json")
-// #listing_code_file("./Services/password_hasher.cs")
-// #listing_code_file("./Services/jwt_token_provider.cs")
-// #listing_code_file("./Services/lot_updater.cs")
-// #listing_code_file("./Services/orphan_killer.cs")
-// #listing_code_file("./Utils/view_path.cs")
-// #listing_code_file("./Utils/global.cs")
-// #listing_code_file("./Utils/extentions.cs")
-// #listing_code_file("./Utils/attributes.cs")
-// #listing_code_file("./Views/Auth/login.cshtml")
-// #listing_code_file("./Views/Layouts/main.cshtml")
-// #listing_code_file("./Views/Shared/User/user_info.cshtml")
-// #listing_code_file("./Views/Shared/User/user_lots.cshtml")
-// #listing_code_file("./Views/Shared/images_gallery.cshtml")
-// #listing_code_file("./Views/Shared/errors.cshtml")
-// #listing_code_file("./Views/Shared/good_results.cshtml")
-// #listing_code_file("./Views/Shared/lot_meta.cshtml")
-// #listing_code_file("./Views/_ViewStart.cshtml")
-// #listing_code_file("./Views/HomePage/lot_card.cshtml")
-// #listing_code_file("./Views/HomePage/pagination_links.cshtml")
-// #listing_code_file("./Views/HomePage/lot_cards_grid.cshtml")
-// #listing_code_file("./Views/HomePage/index.cshtml")
-// #listing_code_file("./Views/Navigations/tags.cshtml")
-// #listing_code_file("./Views/Navigations/main.cshtml")
-// #listing_code_file("./Views/UserLots/purchase_form.cshtml")
-// #listing_code_file("./Views/UserLots/create_form.cshtml")
-// #listing_code_file("./Views/UserLots/edit_form.cshtml")
-// #listing_code_file("./Views/PublicLots/bid_history.cshtml")
-// #listing_code_file("./Views/PublicLots/bid_maker.cshtml")
-// #listing_code_file("./Views/PublicLots/lot_details.cshtml")
-// #listing_code_file("./Views/User/user_purchases.cshtml")
-// #listing_code_file("./Views/User/user_bets.cshtml")
-// #listing_code_file("./Views/Admin/tag_item.cshtml")
-// #listing_code_file("./Views/Admin/tag_list.cshtml")
-// #listing_code_file("./Views/Admin/index.cshtml")
-// #listing_code_file("./Views/Admin/tag_form.cshtml")
-// #listing_code_file("./Views/Admin/tag_edit_form.cshtml")
-//
+#listing_code_file("./up-ln/Program.cs")
+#listing_code_file("./up-ln/Views/Auth/register.cshtml")
+#listing_code_file("./up-ln/Config.cs")
+#listing_code_file("./up-ln/Controllers/auth.cs")
+#listing_code_file("./up-ln/Controllers/user.cs")
+#listing_code_file("./up-ln/Controllers/lots.cs")
+#listing_code_file("./up-ln/Controllers/admin.cs")
+#listing_code_file("./up-ln/Controllers/home.cs")
+#listing_code_file("./up-ln/Models/auth.cs")
+#listing_code_file("./up-ln/Models/db_context.cs")
+#listing_code_file("./up-ln/Models/models.cs")
+#listing_code_file("./up-ln/Models/tags.cs")
+#listing_code_file("./up-ln/Models/view_models.cs")
+#listing_code_file("./up-ln/Models/lots.cs")
+#listing_code_file("./up-ln/Properties/launchSettings.json")
+#listing_code_file("./up-ln/Services/password_hasher.cs")
+#listing_code_file("./up-ln/Services/jwt_token_provider.cs")
+#listing_code_file("./up-ln/Services/lot_updater.cs")
+#listing_code_file("./up-ln/Services/orphan_killer.cs")
+#listing_code_file("./up-ln/Utils/view_path.cs")
+#listing_code_file("./up-ln/Utils/global.cs")
+#listing_code_file("./up-ln/Utils/extentions.cs")
+#listing_code_file("./up-ln/Utils/attributes.cs")
+#listing_code_file("./up-ln/Views/Auth/login.cshtml")
+#listing_code_file("./up-ln/Views/Layouts/main.cshtml")
+#listing_code_file("./up-ln/Views/Shared/User/user_info.cshtml")
+#listing_code_file("./up-ln/Views/Shared/User/user_lots.cshtml")
+#listing_code_file("./up-ln/Views/Shared/images_gallery.cshtml")
+#listing_code_file("./up-ln/Views/Shared/errors.cshtml")
+#listing_code_file("./up-ln/Views/Shared/good_results.cshtml")
+#listing_code_file("./up-ln/Views/Shared/lot_meta.cshtml")
+#listing_code_file("./up-ln/Views/_ViewStart.cshtml")
+#listing_code_file("./up-ln/Views/HomePage/lot_card.cshtml")
+#listing_code_file("./up-ln/Views/HomePage/pagination_links.cshtml")
+#listing_code_file("./up-ln/Views/HomePage/lot_cards_grid.cshtml")
+#listing_code_file("./up-ln/Views/HomePage/index.cshtml")
+#listing_code_file("./up-ln/Views/Navigations/tags.cshtml")
+#listing_code_file("./up-ln/Views/Navigations/main.cshtml")
+#listing_code_file("./up-ln/Views/UserLots/purchase_form.cshtml")
+#listing_code_file("./up-ln/Views/UserLots/create_form.cshtml")
+#listing_code_file("./up-ln/Views/UserLots/edit_form.cshtml")
+#listing_code_file("./up-ln/Views/PublicLots/bid_history.cshtml")
+#listing_code_file("./up-ln/Views/PublicLots/bid_maker.cshtml")
+#listing_code_file("./up-ln/Views/PublicLots/lot_details.cshtml")
+#listing_code_file("./up-ln/Views/User/user_purchases.cshtml")
+#listing_code_file("./up-ln/Views/User/user_bets.cshtml")
+#listing_code_file("./up-ln/Views/Admin/tag_item.cshtml")
+#listing_code_file("./up-ln/Views/Admin/tag_list.cshtml")
+#listing_code_file("./up-ln/Views/Admin/index.cshtml")
+#listing_code_file("./up-ln/Views/Admin/tag_form.cshtml")
+#listing_code_file("./up-ln/Views/Admin/tag_edit_form.cshtml")
+
