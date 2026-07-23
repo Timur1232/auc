@@ -53,9 +53,15 @@ vim appsettings.json
 - `JwtSettings.Secret` - секретный ключ для JWT
 
 ### Обычный запуск
+
+Запуск напрямую через установленный sdk по умолчанию будет в режиме разработки (Development). В этом режиме создается отдельная база данных `auk-dev`. Для запуска в Production нужно задать переменной `ASPNETCORE_ENVIRONMENT` значение "Production":
+```
+export ASPNET_ENVIRONMENT=Production
+```
+
 Убедитесь в работе PostgreSQL:
 ```
-psql -h localhost -p 5432 -U postgres -d auk
+psql -h localhost -p 5432 -U postgres -d auk-dev
 ```
 
 Загрузите зависимости:
@@ -66,6 +72,9 @@ dotnet restore
 Запустите приложение:
 ```
 dotnet run
+
+# или в Production
+ASPNET_ENVIRONMENT=Production dotnet run
 ```
 
 Приложение будет доступно по адресу: http://localhost:8080.
